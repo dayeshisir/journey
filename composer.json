@@ -1,0 +1,40 @@
+{
+  "name": "mfw/chufaba",
+  "description": "travel tool",
+  "license": "MIT",
+  "keywords": ["travel"],
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "shiyibo",
+      "email": "shiyibo@mafengwo.com"
+    }
+  ],
+  "require" : {
+    "php": "*",
+    "noahbuscher/macaw": "dev-master",
+    "nikic/fast-route": "*",
+    "monolog/monolog" : "*",
+    "predis/predis": "*",
+    "aura/web": "*",
+    "respect/validation" : "*",
+    "laravelbook/ardent": "3.*"
+  },
+
+  "autoload" : {
+    "classmap" : [
+      "src/controllers",
+      "src/models",
+      "src/Utils",
+      "src/libs",
+      "src/common"
+    ]
+  },
+
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.phpcomposer.com"
+    }
+  }
+}

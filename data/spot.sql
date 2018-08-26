@@ -1,0 +1,22 @@
+create table `spots` (
+  `id`         BIGINT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `mddid`      INT(10) UNSIGNED NOT NULL DEFAULT 0  COMMENT '目的地id',
+  `name`       VARCHAR(32)      NOT NULL DEFAULT '' COMMENT '景点名称',
+  `reason`     VARCHAR(512)     NOT NULL DEFAULT '' COMMENT '推荐理由',
+  `w_id`       INT(10)          NOT NULL DEFAULT 0  COMMENT '嗡嗡Id',
+  `min_num`    TINYINT          NOT NULL DEFAULT 0  COMMENT '最少合适人数',
+  `max_num`    TINYINT          NOT NULL DEFAULT 0  COMMENT '最大合适人数',
+  `min_time`   DATE                                 COMMENT '最宜游玩时间',
+  `max_time`   DATE                                 COMMENT '最宜游玩时间',
+  `is_wrap`    TINYINT          NOT NULL DEFAULT 0  COMMENT '时间是否绕回，0:否，1:是',
+  `relation`   TINYINT          NOT NULL DEFAULT 0  COMMENT '关系类型',
+  `min_budget` INT(10)          NOT NULL DEFAULT 0  COMMENT '预算范围',
+  `max_budget` INT(10)          NOT NULL DEFAULT 0  COMMENT '预算范围',
+  `spread`     VARCHAR(32)      NOT NULL DEFAULT '' COMMENT '推广',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT '新建时间',
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  INDEX `idx_time`(`min_time`, `max_time`),
+  INDEX `idx_budget` (`min_budget`, `max_budget`),
+  INDEX `idx_num`(`min_num`, `max_num`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
