@@ -8,14 +8,6 @@
 
 use NoahBuscher\Macaw\Macaw;
 
-Macaw::get('/fuck', function() {
-    echo "成功";
-});
-
-Macaw::get('/home', 'HomeController@home');
-
-Macaw::get('/test', 'HomeController@test');
-
 Macaw::post('/admin/add', 'SpotController@bAdd');
 
 Macaw::get('/admin/detail', 'SpotController@aGetById');
@@ -25,6 +17,19 @@ Macaw::get('/admin/list', 'SpotController@aGetList');
 Macaw::get('/admin/update', 'SpotController@bUpdate');
 
 Macaw::post('/journey/add', 'apps\controllers\journey\Journey@bAdd');
+
+Macaw::post('/member/add', 'apps\controllers\member\Member@bAdd');
+
+Macaw::get('/member/getJourneyList', 'apps\controllers\member\Member@aJourneyList');
+
+
+Macaw::get('/journey/check', function() {
+    echo json_encode([
+        'team_name'    => '新兵蛋仔',
+        'team_program' => '约局旅行',
+        'version'      => '1.0',
+    ]);
+});
 
 
 Macaw::get('(:all)', function($fu){

@@ -27,4 +27,40 @@ class Journey extends \Illuminate\Database\Eloquent\Model
     protected $fillable = array('spot_id', 'relation', 'intention', 'status', 'people_num', 'start_time',
         'end_time', 'desc', 'avg_budget', 'created_uid');
     protected $hidden   = array();
+
+    /**
+     * @param $aParam
+     * @return mixed
+     * @throws \apps\libs\Exception
+     */
+    public static function bAdd($aParam)
+    {
+        $oQuery = self::query();
+
+        $oJourney = $oQuery->create($aParam);
+
+        if (null === $oJourney) {
+            throw new \apps\libs\Exception('', \apps\libs\Exception::ERR_DB_ERROR);
+        }
+
+        return $oJourney->id;
+    }
+
+    /**
+     * 根据journey_id批量获取旅行信息
+     *
+     * @param $ids
+     * @return array
+     */
+    public static function aGetJourneyByIds($ids)
+    {
+        $ids = array_unique($ids);
+        $oJourneyQuery = self::query();
+        $aJourneyList  = $oJourneyQuery->whereIn('id', $ids)->get();
+        if (empty($aJourneyList)) {
+            return [];
+        }
+
+        return $aJourneyList->toArray();
+    }
 }

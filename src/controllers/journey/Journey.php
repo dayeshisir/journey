@@ -24,31 +24,15 @@ class Journey extends \apps\controllers\BaseController
 
             \apps\utils\journey\JourneyUtils::bValid($aParam);
 
-            $oQuery   = \apps\models\journey\Journey::query();
-            $oJourney = $oQuery->create($aParam);
+            $iInsertId = \apps\models\journey\Journey::bAdd($aParam);
 
-            if (null === $oJourney) {
-                throw new Exception('', Exception::ERR_DB_ERROR);
-            }
-
-            // 队长作为第一个加入的成员
-            $oQuery = \apps\models\member\Member::query();
-            $aParam = [
-                'journey_id' => $oJourney->id,
-                'uid'        => \apps\libs\Request::mGetCookie('uid', 0),
-                'portrait'   => \apps\libs\Request::mGetCookie('portrait', ''),
-                'type'       => \apps\common\Constant::MEMBER_TYPE_LEADER,
-            ];
-            $oMember = $oQuery->create($aParam);
-
-            if (null == $oMember) {
-                throw new Exception('',Exception::ERR_DB_ERROR);
-            }
-
-            \apps\libs\BuildReturn::aBuildReturn(['id' => $oJourney->id]);
+            \apps\libs\BuildReturn::aBuildReturn(['id' => $iInsertId]);
 
         } catch (\Exception $e) {
-            \apps\libs\BuildReturn::aBuildReturn([], $e->getCode(), $e->getMessage());
+            $errno  = $e->getCode();
+            $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
+            Log::vWarning('Journey::add fail', ['param' => $aParam, 'errno' => $errno, 'msg' => $errmsg]);
+            \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
         }
     }
 

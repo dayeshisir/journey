@@ -19,14 +19,13 @@ class MemberUtils
     protected static $_aMap = [
         'journey_id' => 0,
         'uid'        => 0,
-        'portrait'   => 0,
         'type'       => 0,
         'intention'  => 0,
         'free_time'  => '',
         'busy_time'  => '',
     ];
 
-    public static function aGetParam()
+    public static function aGetAddParam()
     {
         $aParam   = array();
         foreach (self::$_aMap as $key => $value) {
@@ -36,7 +35,7 @@ class MemberUtils
         return $aParam;
     }
 
-    public static function bValid($aParam)
+    public static function bAddParamValid($aParam)
     {
         if (false === v::numeric()->validate($aParam['journey_id'])) {
             \apps\libs\Log::vWarning('jouney_id invlid', $aParam);
@@ -50,8 +49,8 @@ class MemberUtils
             throw new Exception('', Exception::ERR_PARAM_ERROR);
         }
 
-        if (false === v::create()->validate($aParam['portrait'])) {
-            \apps\libs\Log::vWarning('portrait invalid', $aParam);
+        if (false === v::numeric()->validate($aParam['intention'])) {
+            \apps\libs\Log::vWarning('intention invalid', $aParam);
 
             throw new Exception('', Exception::ERR_PARAM_ERROR);
         }
