@@ -9,7 +9,7 @@
 namespace apps\controllers\journey;
 
 use apps\libs\Exception;
-use apps\models\member\Member;
+use apps\libs\Log;
 
 class Journey extends \apps\controllers\BaseController
 {

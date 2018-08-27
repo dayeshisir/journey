@@ -55,11 +55,12 @@ class JourneyUtils
      */
     public static function bValid($aParam)
     {
-        if (false === v::numeric()->validate($aParam['spot_id']) ) {
-            \apps\libs\Log::vWarning('spot invlaid', $aParam);
-
-            throw new Exception('', Exception::ERR_PARAM_ERROR);
-        }
+        // 一开始是没有景点信息的
+//        if (false === v::numeric()->validate($aParam['spot_id']) ) {
+//            \apps\libs\Log::vWarning('spot invlaid', $aParam);
+//
+//            throw new Exception('', Exception::ERR_PARAM_ERROR);
+//        }
 
         if (false === v::numeric()->between(0, 10)->validate($aParam['relation'])) {
             \apps\libs\Log::vWarning('spot invlaid', $aParam);
