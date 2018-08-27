@@ -24,8 +24,8 @@ class Journey extends \Illuminate\Database\Eloquent\Model
     );
 
     protected $guard    = array('id',);
-    protected $fillable = array('spot_id', 'relation', 'intention', 'status', 'people_num', 'start_time',
-        'end_time', 'desc', 'avg_budget', 'created_uid');
+    protected $fillable = array('spot_id', 'relation', 'status', 'people_num', 'start_time',
+        'end_time', 'desc', 'min_budget', 'max_budget', 'created_uid');
     protected $hidden   = array();
 
     /**

@@ -29,4 +29,10 @@ class Constant
     const RELATION_LOVERS  = 2;
     const RELATION_FAMILY  = 3;
     const RELATION_OTHER   = 4;
+
+    /**
+     * 人数限制
+     */
+    const MIN_PEOPLE_NUM = 1;
+    const MAX_PEOPLE_NUM = 15;
 }

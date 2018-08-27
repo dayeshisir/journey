@@ -55,20 +55,17 @@ class JourneyUtils
      */
     public static function bAddParamValid($aParam)
     {
-        if (false === v::numeric()->between(\apps\common\Constant::RELATION_FRIENDS, \apps\common\Constant::RELATION_OTHER,)->validate($aParam['relation'])) {
-            \apps\libs\Log::vWarning('spot invlaid', $aParam);
+        if (false === v::numeric()->between(\apps\common\Constant::RELATION_FRIENDS,
+                \apps\common\Constant::RELATION_OTHER, true)
+                ->validate($aParam['relation'])) {
+            \apps\libs\Log::vWarning('relation invlaid', $aParam);
 
             throw new Exception('', Exception::ERR_PARAM_ERROR);
         }
 
-        if (false === v::numeric()->between(0, 10)->validate($aParam['intention'])) {
-            \apps\libs\Log::vWarning('intension invalid', $aParam);
-
-
-            throw new Exception('', Exception::ERR_PARAM_ERROR);
-        }
-
-        if (false === v::numeric()->between(1, 100)->validate($aParam['people_num'])) {
+        if (false === v::numeric()->between(\apps\common\Constant::MIN_PEOPLE_NUM,
+                \apps\common\Constant::MAX_PEOPLE_NUM)
+                ->validate($aParam['people_num'])) {
             \apps\libs\Log::vWarning('people_num invalid', $aParam);
 
 
