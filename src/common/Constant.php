@@ -21,4 +21,12 @@ class Constant
      */
     const MEMBER_TYPE_LEADER = 1;
     const MEMBER_TYPE_MEMBER = 2;
+
+    /**
+     * 关系类型
+     */
+    const RELATION_FRIENDS = 1;
+    const RELATION_LOVERS  = 2;
+    const RELATION_FAMILY  = 3;
+    const RELATION_OTHER   = 4;
 }
