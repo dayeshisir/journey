@@ -25,17 +25,52 @@ class Member extends \apps\controllers\BaseController
         try {
             \apps\utils\member\MemberUtils::bAddParamValid($aParam);
 
+            $iUid = intval(\apps\libs\Request::mGetParam('uid', ''));
+
+            // 首先获取旅局信息，指不定没有这个局呢
+            $aJourney = \apps\models\journey\Journey::aGetJourneyByIds([$aParam['journey_id']]);
+            if (empty($aJourney)) {
+
+                throw new Exception('', Exception::ERR_PARAM_ERROR);
+            }
+            $aJourney = $aJourney[0];
+            $iTargetNum = intval($aJourney['people_num']);
+
+            // 获取该局是否人员满了
+            $aMember = \apps\models\member\Member::aGetJourneyGroup($aParam);
+            $iCurNum = count($aMember);
+            if ($iCurNum >= $iTargetNum) {
+
+                throw new Exception('', Exception::ERR_MEMBER_FULL_ERROR);
+            }
+
+            // 第一个加入的成员不是局的发起者，呃，什么地方出问题了
+            if (!$iCurNum && $iUid !== intval($aJourney['created_uid'])) {
+
+                throw  new Exception('', Exception::ERR_PERMISSION_ERROR);
+            }
+
+            // 先插入用户的信息
             $aUser = [
                 'uid' => \apps\libs\Request::mGetParam('uid', ''),
                 'portrait' => \apps\libs\Request::mGetParam('portrait', ''),
                 'nick_name' => \apps\libs\Request::mGetParam('nick_name', ''),
             ];
-
-            // 先插入用户的信息
             \apps\models\user\User::bAdd($aUser);
 
             // 然后是旅行团信息
             $iInsertId = \apps\models\member\Member::bAdd($aParam);
+
+            // 队长加入了，局的状态由初始状态转为 等待成员加入
+            if ($iInsertId) {
+                \apps\models\journey\Journey::iWaitMember($aParam['journey_id']);
+            }
+
+            // 所有人都入局，局的状态由等待用户加入转为等待投票
+            $iCurNum++;
+            if ($iCurNum >= $iTargetNum) {
+                \apps\models\journey\Journey::iWaitVote($aParam['journey_id']);
+            }
 
             \apps\libs\BuildReturn::aBuildReturn(['id' => $iInsertId]);
 
@@ -46,182 +81,4 @@ class Member extends \apps\controllers\BaseController
             \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
         }
     }
-
-//    /**
-//     * 我的旅行列表
-//     *
-//     */
-//    public function aJourneyList()
-//    {
-//        $iPage   = \apps\libs\Request::mGetParam('page', 1);
-//        $iSize   = \apps\libs\Request::mGetParam('size', 10);
-//        $iUserId = \apps\libs\Request::mGetParam('uid', 0);
-//
-//        try {
-//            if (empty($iUserId) || $iUserId < 0) {
-//
-//                throw new Exception('', Exception::ERR_UID_ERROR);
-//            }
-//
-//            if ($iPage <= 0 || $iSize <= 0) {
-//
-//                throw new Exception('', Exception::ERR_PARAM_ERROR);
-//            }
-//
-//            // 第一步，根据用户的uid拉取该用户参与的旅行列表
-//            $aParam = ['uid' => $iUserId, 'page' => $iPage, 'size' => $iSize];
-//            $aList = \apps\models\member\Member::aGetUserList($aParam);
-//            if (empty($aList)) {
-//                return [];
-//            }
-//
-//            // 根据上一步得到的旅行列表，得到journey_id,根据journey_id得到旅行信息，包括状态，队长
-//            $aJourneyIds = array_column($aList, 'journey_id');
-//            $aJourneyList  = \apps\models\journey\Journey::aGetJourneyByIds($aJourneyIds);
-//            $aJourneyMap = [];
-//            foreach ($aJourneyList as $journey) {
-//                $aJourneyMap[$journey['id']] = $journey;
-//            }
-//
-//            // 第三步 获取队长的昵称、头像信息
-//            $aLeaderIds = array_column($aJourneyList, 'created_uid');
-//            $aUserInfo  = \apps\models\user\User::aGetUserByIds($aLeaderIds);
-//            $aUserMap = [];
-//            foreach ($aUserInfo as $user) {
-//                $aUserMap[$user['uid']] = $user;
-//            }
-//
-//            $aRet = [];
-//            foreach ($aList as $list) {
-//                $aCurJourney = $aJourneyMap[$list['journey_id']];
-//                $aCurLeader  = $aUserMap[$aCurJourney['created_uid']];
-//
-//                $aNew = [
-//                    'leader_id'       => $aCurLeader['uid'],
-//                    'leader_portrait' => $aCurLeader['portrait'],
-//                    'leader_nickname' => $aCurLeader['nick_name'],
-//                    'journey_status'  => $aCurJourney['status'],      // TODO 收敛到一个函数内
-//                ];
-//
-//                $aRet[] = $aNew;
-//            }
-//
-//            \apps\libs\BuildReturn::aBuildReturn($aRet);
-//
-//        } catch (\Exception $e) {
-//            $errno  = $e->getCode();
-//            $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
-//            Log::vWarning('Member::add fail', ['param' => [
-//                'uid' => $iUserId, 'page' => $iPage, 'size' => $iSize,
-//            ], 'errno' => $errno, 'msg' => $errmsg]);
-//
-//            \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
-//        }
-//    }
-//
-//    /**
-//     * 局友版收集用户信息时展示局头写的意向
-//     *
-//     */
-//    public function aGetLeaderIntention()
-//    {
-//        $iJourneyId = \apps\libs\Request::mGetParam('journey_id', 0);
-//
-//        try {
-//            if ($iJourneyId <= 0) {
-//
-//                throw new Exception('', Exception::ERR_PARAM_ERROR);
-//            }
-//
-//            $aJourney = \apps\models\journey\Journey::aGetJourneyByIds([$iJourneyId]);
-//            if (empty($aJourney)) {
-//
-//                throw new Exception('', Exception::ERR_PARAM_ERROR);
-//            }
-//
-//            $iLeaderId = $aJourney[0]['created_uid'];
-//            $aParam = [
-//                'uid'        => $iLeaderId,
-//                'journey_id' => $iJourneyId,
-//            ];
-//            $aMember = \apps\models\member\Member::aGetDetail($aParam);
-//            if (empty($aMember)) {
-//
-//                throw new Exception('', Exception::ERR_PARAM_ERROR);
-//            }
-//
-//            \apps\libs\BuildReturn::aBuildReturn($aMember);
-//        } catch (\Exception $e) {
-//            $errno  = $e->getCode();
-//            $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
-//            Log::vWarning('Member::add fail', ['param' => ['journey_id' => $iJourneyId,],
-//                'errno' => $errno, 'msg' => $errmsg]);
-//
-//            \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
-//        }
-//    }
-//
-//    /**
-//     * 详情页-组局中
-//     */
-//    public function aGetJourneyIntention()
-//    {
-//        $iJourneyId = \apps\libs\Request::mGetParam('journey_id', 0);
-//        try {
-//            if ($iJourneyId <= 0) {
-//
-//                throw new Exception('', Exception::ERR_PARAM_ERROR);
-//            }
-//
-//            $aJourney = \apps\models\journey\Journey::aGetJourneyByIds([$iJourneyId]);
-//            if (empty($aJourney)) {
-//
-//                throw new Exception('', Exception::ERR_PARAM_ERROR);
-//            }
-//
-//            $aMember = \apps\models\member\Member::aGetJourneyGroup(['journey_id' => $iJourneyId]);
-//            $iAnyNum      = 0;
-//            $iChinaNum    = 0;
-//            $iInternalNum = 0;
-//            $aBusyTime    = [];
-//            foreach ($aMember as $member) {
-//                if (\apps\common\Constant::INTENTION_TYPE_ANY === intval($member['intention'])) {
-//                    $iAnyNum++;
-//                }
-//                if (\apps\common\Constant::INTENTION_TYPE_CHINA === intval($member['intention'])) {
-//                    $iChinaNum++;
-//                }
-//                if (\apps\common\Constant::INTENTION_TYPE_INTERNATION === intval($member['intention'])) {
-//                    $iInternalNum++;
-//                }
-//
-//                $aCurBusyTime = json_decode($member['busy_time'], true);
-//                if (!empty($aCurBusyTime)) {
-//                    $aBusyTime = array_merge($aBusyTime, $aCurBusyTime);
-//                }
-//            }
-//
-//            $aRet = [
-//                'create_time' => $aJourney[0]['created_at'],
-//                'duration'    => \apps\common\Constant::INTERVAL_WAIT_JOIN,
-//                'target_num'  => $aJourney[0]['people_num'],
-//                'current_num' => count($aMember),
-//                'intention'   => [
-//                    'any'         => $iAnyNum,
-//                    'china'       => $iChinaNum,
-//                    'internation' => $iInternalNum,
-//                ],
-//                'busy_time'  => $aBusyTime,
-//            ];
-//
-//            \apps\libs\BuildReturn::aBuildReturn($aRet);
-//        } catch (\Exception $e) {
-//            $errno  = $e->getCode();
-//            $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
-//            Log::vWarning('Member::add fail', ['param' => ['journey_id' => $iJourneyId,],
-//                'errno' => $errno, 'msg' => $errmsg]);
-//
-//            \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
-//        }
-//    }
 }

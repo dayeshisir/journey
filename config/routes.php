@@ -26,6 +26,8 @@ Macaw::get('/journey/getLeaderIntenion', 'apps\controllers\journey\Journey@aGetL
 
 Macaw::get('/journey/getJourneyIntention', 'apps\controllers\journey\Journey@aGetJourneyIntention');
 
+Macaw::post('/journey/setMemberFull', 'apps\controllers\journey\Journey@iSetMemberFull');
+
 Macaw::get('/journey/check', function() {
     echo json_encode([
         'team_name'    => '新兵蛋仔',

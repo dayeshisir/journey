@@ -27,16 +27,30 @@ class Exception extends \Exception
      */
     const ERR_DB_ERROR    = 30003;
 
+    /**
+     *  局成员满了
+     */
+    const ERR_MEMBER_FULL_ERROR = 40001;
+
+    /**
+     * 无权操作
+     */
+    const ERR_PERMISSION_ERROR  = 40002;
+
     protected $aInternalErrorMap = [
         self::ERR_PARAM_ERROR => '参数错误',
         self::ERR_UID_ERROR   => '用户没登录',
         self::ERR_DB_ERROR    => 'DB 操作异常',
+        self::ERR_MEMBER_FULL_ERROR => '人员满',
+        self::ERR_PERMISSION_ERROR  => '权限不够',
     ];
 
     protected $aExportErrorMap = [
         self::ERR_PARAM_ERROR => '您的输入有误，请查看后再次输入',
         self::ERR_UID_ERROR   => '您还没有登录，请登录后重试',
         self::ERR_DB_ERROR    => '系统开小差，请稍后重试',
+        self::ERR_MEMBER_FULL_ERROR => '您来晚了，局满员了',
+        self::ERR_PERMISSION_ERROR  => '您权限不够，请查证后再次操作',
     ];
 
     public function __construct($message = "", $code = 0, Throwable $previous = null)

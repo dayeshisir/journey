@@ -12,6 +12,8 @@ CREATE TABLE  `journeys`(
   `created_uid` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人id',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT '新建时间',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT '更新时间',
+  `vote_time`  TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '投票时间',
+  `succ_time`  TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '成功时间',
   PRIMARY KEY (`id`),
   INDEX `idx_time`(`start_time`),
   INDEX `idx_uid`(`created_uid`, `start_time`)

@@ -63,4 +63,61 @@ class Journey extends \Illuminate\Database\Eloquent\Model
 
         return $aJourneyList->toArray();
     }
+
+    /**
+     *  初始状态 => 等待成员加入 状态
+     *
+     * @param $journeyId
+     * @return int
+     */
+    public static function iWaitMember($journeyId)
+    {
+        $oModel = self::query()->find($journeyId);
+        $oModel->status = \apps\common\Constant::JOURNEY_STATUS_JOIN;
+
+        return $oModel->save() ? 1 : 0;
+    }
+
+    /**
+     * 等待成员加入 => 等待投票
+     *
+     * @param $journeyId
+     * @return int
+     */
+    public static function iSetMemberFull($journeyId)
+    {
+        $oModel = self::query()->find($journeyId);
+        $oModel->status = \apps\common\Constant::JOURNEY_STATUS_VOTE;
+        $oModel->vote_time = date('Y-m-d H:i:s');
+
+        return $oModel->save() ? 1 : 0;
+    }
+
+    /**
+     * 等待投票 => 成局
+     *
+     * @param $journeyId
+     * @return int
+     */
+    public static function iSucc($journeyId)
+    {
+        $oModel = self::query()->find($journeyId);
+        $oModel->status = \apps\common\Constant::JOURNEY_STATUS_SUCC;
+        $oModel->succ_time = date('Y-m-d H:i:s');
+
+        return $oModel->save() ? 1 : 0;
+    }
+
+    /**
+     * 流局
+     * @param $journeyId
+     * @return int
+     */
+    public static function iFail($journeyId)
+    {
+        $oModel = self::query()->find($journeyId);
+        $oModel->status = \apps\common\Constant::JOURNEY_STATUS_FAIL;
+
+        return $oModel->save() ? 1 : 0;
+    }
 }

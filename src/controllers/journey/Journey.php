@@ -213,4 +213,38 @@ class Journey extends \apps\controllers\BaseController
             \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
         }
     }
+
+    public function iSetMemberFull()
+    {
+        $iJourneyId = intval(\apps\libs\Request::mGetParam('journey_id', 0));
+        $iUid       = intval(\apps\libs\Request::mGetParam('uid', ''));
+
+        try {
+            if ($iJourneyId <= 0 || $iUid <= 0) {
+                throw new Exception('', Exception::ERR_PARAM_ERROR);
+            }
+
+            // 拉取局的信息
+            $aJourney = \apps\models\journey\Journey::aGetJourneyByIds([$iJourneyId]);
+            if (empty($aJourney)) {
+                throw new Exception('', Exception::ERR_PARAM_ERROR);
+            }
+            $aJourney = $aJourney[0];
+
+            if ($iUid !== intval($aJourney['created_uid'])) {
+                throw new Exception('', Exception::ERR_PERMISSION_ERROR);
+            }
+
+            $ret = \apps\models\journey\Journey::iSetMemberFull($iJourneyId);
+
+            \apps\libs\BuildReturn::aBuildReturn($ret);
+        } catch (\Exception $e) {
+            $errno  = $e->getCode();
+            $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
+            Log::vWarning('Member::add fail', ['param' => ['journey_id' => $iJourneyId, 'uid' => $iUid],
+                'errno' => $errno, 'msg' => $errmsg]);
+
+            \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
+        }
+    }
 }
