@@ -23,6 +23,7 @@ class MemberUtils
         'intention'  => 0,
         'free_time'  => '',
         'busy_time'  => '',
+        'memo'       => '',
     ];
 
     public static function aGetAddParam()

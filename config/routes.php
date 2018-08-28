@@ -20,8 +20,11 @@ Macaw::post('/journey/add', 'apps\controllers\journey\Journey@bAdd');
 
 Macaw::post('/member/add', 'apps\controllers\member\Member@bAdd');
 
-Macaw::get('/member/getJourneyList', 'apps\controllers\member\Member@aJourneyList');
+Macaw::get('/journey/getJourneyList', 'apps\controllers\journey\Journey@aJourneyList');
 
+Macaw::get('/journey/getLeaderIntenion', 'apps\controllers\journey\Journey@aGetLeaderIntention');
+
+Macaw::get('/journey/getJourneyIntention', 'apps\controllers\journey\Journey@aGetJourneyIntention');
 
 Macaw::get('/journey/check', function() {
     echo json_encode([
