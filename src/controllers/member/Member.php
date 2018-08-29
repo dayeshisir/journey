@@ -39,7 +39,7 @@ class Member extends \apps\controllers\BaseController
             // 获取该局是否人员满了
             $aMember = \apps\models\member\Member::aGetJourneyGroup($aParam);
             $iCurNum = count($aMember);
-            if ($iCurNum >= $iTargetNum) {
+            if ($iCurNum >= $iTargetNum || \apps\common\Constant::JOURNEY_STATUS_VOTE === intval($aJourney['status'])) {
 
                 throw new Exception('', Exception::ERR_MEMBER_FULL_ERROR);
             }
