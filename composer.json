@@ -18,7 +18,8 @@
     "predis/predis": "*",
     "aura/web": "*",
     "respect/validation" : "*",
-    "laravelbook/ardent": "3.*"
+    "laravelbook/ardent": "3.*",
+    "phpoffice/phpspreadsheet": "*"
   },
 
   "autoload" : {
