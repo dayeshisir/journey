@@ -51,23 +51,41 @@ class User extends \apps\controllers\BaseController
      * 获取微信的appid
      *
      */
-    public function aGetOpenId()
+    protected function aGetOpenId()
     {
-        $sCode = \apps\libs\Request::mGetParam('code', '');
+        $sCode     = \apps\libs\Request::mGetParam('code', '');
+        $aUserInfo = \apps\libs\Request::mGetParam('userInfo', '');
 
-        $aParam = [
-            'grant_type' => 'authorization_code',
-            'appid'      => \apps\common\Constant::WX_APP_ID,
-            'secret'     => \apps\common\Constant::WX_APP_SECRENT,
-            'js_code'    => $sCode,
-        ];
-        $oRequest = \Requests::get(\apps\common\Constant::WX_API_JSCODE2SESSION, $aParam);
+        $appId = \apps\common\Constant::WX_APP_ID;
+        $secret = \apps\common\Constant::WX_APP_SECRENT;
+        $sUrl="https://api.weixin.qq.com/sns/jscode2session?appid=$appId&secret=$secret&js_code=$sCode&grant_type=authorization_code";
+
+        $aHeaders = ['Accept' => 'application/json'];
+        $oRequest = \Requests::get($sUrl, $aHeaders);
 
         $aRet = json_decode($oRequest->body, true);
-        if ($aRet['errcode']) {
-            return \apps\libs\BuildReturn::aBuildReturn([], $aRet['errcode'], $aRet['errmsg']);
+
+        if (!isset($aRet['session_key'])) {
+
+            \apps\libs\BuildReturn::aBuildReturn([], 'get wx open id fail');
+
+            return [];
         }
 
-        \apps\libs\BuildReturn::aBuildReturn(json_decode($oRequest->body, true));
+        $aParam = [
+            'openid' => $aRet['openid'],
+            'nick_name' => $aUserInfo['nickName'],
+            'portrait'  => $aUserInfo['avatarUrl'],
+            'gender'    => $aUserInfo['gender'],
+        ];
+
+        $oUser = \apps\models\user\User::query()->updateOrCreate($aParam);
+        if (null === $oUser) {
+
+            \apps\libs\Log::vWarning('add user fail', $aParam);
+        }
+
+        unset($aRet['session_key']);
+        \apps\libs\BuildReturn::aBuildReturn($aRet);
     }
 }

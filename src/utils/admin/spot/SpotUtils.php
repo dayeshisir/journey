@@ -10,15 +10,13 @@ namespace apps\utils\admin;
 class SpotUtils
 {
     protected static $_aMap = array(
-        'name'       => '',
-        'reason'     => '',
-        'mddid'      => 0,
+        // 'name'       => '',
+        'desc'     => '',
+        'mdd_name'   => '',
         'w_id'       => 0,
         'min_num'    => 0,
         'max_num'    => 0,
-        'min_time'   => '2018-01-01',
-        'max_time'   => '2018-12-31',
-        'is_wrap'    => 0,
+        'time'   => '2018-01-01',
         'relation'   => 0,
         'min_budget' => 0,
         'max_budget' => 0,

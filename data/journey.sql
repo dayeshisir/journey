@@ -1,5 +1,6 @@
 CREATE TABLE  `journeys`(
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增id',
+  `uid` VARCHAR(128)   NOT NULL DEFAULT '' COMMENT '创建人id',
   `spot_id` BIGINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '景点id',
   `relation` TINYINT UNSIGNED NOT NULL DEFAULT 1 COMMENT '关系',
   `status`   TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT '状态',
@@ -9,12 +10,11 @@ CREATE TABLE  `journeys`(
   `min_budget` INT UNSIGNED NOT NULL DEFAULT 1 COMMENT '人均预算',
   `max_budget` INT UNSIGNED NOT NULL DEFAULT 1 COMMENT '人均预算',
   `desc`       VARCHAR (1024)   NOT NULL DEFAULT '' COMMENT '描述',
-  `created_uid` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人id',
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT '新建时间',
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT '更新时间',
   `vote_time`  TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '投票时间',
   `succ_time`  TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '成功时间',
   PRIMARY KEY (`id`),
   INDEX `idx_time`(`start_time`),
-  INDEX `idx_uid`(`created_uid`, `start_time`)
+  INDEX `idx_uid`(`uid`, `start_time`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;

@@ -22,8 +22,11 @@ use apps\libs\Exception;
  */
 class User extends \Illuminate\Database\Eloquent\Model
 {
+    /**
+     * @var array
+     */
     protected $guard    = array('id',);
-    protected $fillable = array('uid', 'portrait', 'nick_name');
+    protected $fillable = array('openid', 'unionid', 'gender', 'portrait', 'nick_name',);
     protected $hidden   = array();
 
     public static function bAdd($aParam)

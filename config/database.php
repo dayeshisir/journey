@@ -18,9 +18,9 @@ return [
 
     'password'  => 'DaYe19!(',
 
-    'charset'   => 'utf8',
+    'charset'   => 'utf8mb4',
 
-    'collation' => 'utf8_general_ci',
+    'collation' => 'utf8mb4_unicode_ci',
 
     'prefix'    => ''
 

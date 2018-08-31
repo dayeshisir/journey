@@ -8,7 +8,7 @@
 
 use NoahBuscher\Macaw\Macaw;
 
-Macaw::post('/admin/add', 'SpotController@bAdd');
+Macaw::post('/admin/add', 'apps\controllers\admin\spot\SpotController@bAdd');
 
 Macaw::get('/admin/detail', 'SpotController@aGetById');
 
@@ -33,6 +33,12 @@ Macaw::get('/test/demo', 'apps\controllers\test\Test@aDemo');
 Macaw::get('/test/echo', 'apps\controllers\test\Test@aEcho');
 
 Macaw::get('/user/openid', 'apps\controllers\user\User@aGetOpenId');
+
+
+Macaw::get('/user/userinfo', 'apps\controllers\user\User@aGetUserInfo');
+
+Macaw::get('/user/demo', 'apps\controllers\user\User@demo');
+
 
 
 Macaw::get('/journey/check', function() {

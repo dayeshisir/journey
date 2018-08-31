@@ -61,7 +61,7 @@ class Constant
     /**
      * 小程序接口
      */
-    const WX_API_JSCODE2SESSION = 'https://api.weixin.qq.com/sns/jscode2session';
+    const WX_API_JSCODE2SESSION = 'https://api.weixin.qq.com/sns/auth2/access_token';
 
     const WX_APP_ID      = 'wx2564f35414198d97';
     const WX_APP_SECRENT = 'ed08795774461f505feab3d997235eca';

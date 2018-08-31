@@ -5,9 +5,13 @@
  * Date: 2018/8/29
  * Time: 下午11:10
  */
-require_once '../../vendor/phpoffice/phpspreadsheet/src/Bootstrap.php';
+
+require_once '../../vendor/autoload.php';
+// require_once '../../vendor/phpoffice/phpspreadsheet/src/Bootstrap.php';
+
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 class LoadData
 {
@@ -20,7 +24,7 @@ class LoadData
         "D" => 'pic_url',
         "E" => 'desc',
         "F" => 'mdd_name',
-        "G" => 'location',
+        "G" => 'label',
         "H" => 'min_recommend_num',
         "I" => 'max_recommend_num',
         "J" => 'time',
@@ -33,6 +37,14 @@ class LoadData
     public static function init()
     {
         self::$_sFile =  dirname(__FILE__) . "/../../data/source.xlsx";
+
+        $oCapsule = new Capsule;
+
+        $oCapsule->addConnection(require '../../config/database.php');
+
+        $oCapsule->setAsGlobal();
+
+        $oCapsule->bootEloquent();
     }
 
     public static function load()
@@ -53,6 +65,10 @@ class LoadData
         foreach ($aSheetData as $sheet) {
             $aNew = self::transField($sheet);
 
+            if (intval($aNew['w_id']) <= 0) {
+                continue;
+            }
+
             $aRecommendTime   = self::aGetRecommendTime($aNew['time']);
             $aRecommendBudget = self::aGetRecommendBudget($aNew['budget']);
             $iRelation        = self::iGetRecommendRelation($aNew['relation']);
@@ -60,16 +76,16 @@ class LoadData
             $aData[] = [
                 'w_id'               => $aNew['w_id'],
                 'nick_name'          => $aNew['nick_name'],
-                'pic_url'            => [$aNew['pic_url']],
+                'pic'                => json_encode([$aNew['pic_url']]),
                 'desc'               => $aNew['desc'],
                 'mdd_name'           => $aNew['mdd_name'],
-                'location'           => $aNew['location'],
+                'label'              => $aNew['label'],
                 'min_num'            => $aNew['min_recommend_num'],
                 'max_num'            => $aNew['max_recommend_num'],
-                'recommend_time'     => $aRecommendTime,
-                'min_duration'       => $aNew['min_recommend_num'],
-                'max_duration'       => $aNew['max_recommend_num'],
-                'recommend_relation' => $iRelation,
+                'time'               => json_encode($aRecommendTime),
+                'min_days'           => $aNew['min_recommend_duration'],
+                'max_days'           => $aNew['max_recommend_duration'],
+                'relation'           => $iRelation,
                 'min_budget'         => $aRecommendBudget['min_budget'],
                 'max_budget'         => $aRecommendBudget['max_budget'],
             ];
@@ -105,6 +121,10 @@ class LoadData
      */
     protected static function aGetRecommendBudget($sBudget)
     {
+        if (false === strpos($sBudget, ',')) {
+            return ['min_budget' => 0, 'max_budget' => 0];
+        }
+
         list($min_budget, $max_budget) = explode(',', $sBudget);
 
         return ['min_budget' => $min_budget, 'max_budget' => $max_budget];

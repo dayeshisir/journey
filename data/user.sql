@@ -1,7 +1,6 @@
 CREATE TABLE `users`(
   `id` BIGINT(20)  UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `openid` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '用户唯一标识',
-  `session_key` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '回话密钥',
   `unionid` VARCHAR (128) NOT NULL DEFAULT ''COMMENT '用户在开放平台的唯一标识符',
   `gender`  TINYINT NOT NULL DEFAULT 0 COMMENT '性别 1:男性 2:女性 0:未知',
   `portrait` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '旅行id',
