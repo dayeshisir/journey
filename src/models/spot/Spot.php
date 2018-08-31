@@ -1,12 +1,13 @@
 <?php
-namespace apps\models\admin\spot;
-
 /**
  * Created by PhpStorm.
  * User: shiyibo
- * Date: 2018/8/22
- * Time: 上午12:35
+ * Date: 2018/9/1
+ * Time: 上午12:32
  */
+
+namespace apps\models\spot;
+
 
 /**
  * @property int id
@@ -35,8 +36,25 @@ class Spot extends \Illuminate\Database\Eloquent\Model
         'min_days', 'max_days', 'time', 'relation', 'min_budget', 'max_budget', 'min_sbudget', 'max_sbudget', 'priority', 'spread');
     protected $hidden   = array();
 
-    public function aGetSpotsByCondiction($aCondition)
+    /**
+     * 根据条件，挑选出适合的景点
+     * @param $aCondtion
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public static function aGetSpotsByCondition($aCondtion)
     {
+        $oQuery = self::query();
+        if (!isset($aCondtion['intention'])) {
+            $oQuery->where('lable', '=', $aCondtion['intention']);
+        }
+        $oQuery->where('relation', '=', $aCondtion['relation']);
+        $oQuery->where('min_num', '<=', $aCondtion['people_num']);
+        $oQuery->where('max_num', '>=', $aCondtion['people_num']);
+        $oQuery->where('min_budget', '<=', $aCondtion['min_budget']);
+        $oQuery->where('max_budget', '>=', $aCondtion['max_budget']);
 
+        $aRet = $oQuery->get();
+
+        return $aRet;
     }
 }

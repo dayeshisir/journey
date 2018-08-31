@@ -21,7 +21,8 @@
     "respect/validation" : "*",
     "laravelbook/ardent": "3.*",
     "phpoffice/phpspreadsheet": "*",
-    "rmccue/requests": "*"
+    "rmccue/requests": "*",
+    "league/period": "*"
   },
 
   "autoload" : {
