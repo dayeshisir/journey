@@ -57,4 +57,12 @@ class Constant
     const JOURNEY_STATUS_VOTE = 2;      // 队员都加入了 或者 局头 确认局成了
     const JOURNEY_STATUS_SUCC = 3;      // 成功
     const JOURNEY_STATUS_FAIL = 4;      // 失败
+
+    /**
+     * 小程序接口
+     */
+    const WX_API_JSCODE2SESSION = 'https://api.weixin.qq.com/sns/jscode2session';
+
+    const WX_APP_ID      = 'wx2564f35414198d97';
+    const WX_APP_SECRENT = 'ed08795774461f505feab3d997235eca';
 }

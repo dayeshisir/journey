@@ -14,19 +14,20 @@ class LoadData
     protected static $_sFile = '';
 
     protected static $_aFieldsMap = array(
-        "A" => 'w_id',
-        "B" => 'nick_name',
-        "C" => 'pic_url',
-        "D" => 'desc',
-        "E" => 'mdd_name',
-        "F" => 'location',
-        "G" => 'min_recommend_num',
-        "H" => 'max_recommend_num',
-        "I" => 'time',
-        "J" => 'min_recommend_duration',
-        'K' => 'max_recommend_duration',
-        'L' => 'relation',
-        'M' => 'budget',
+        "A" => 'priority',
+        "B" => 'w_id',
+        "C" => 'nick_name',
+        "D" => 'pic_url',
+        "E" => 'desc',
+        "F" => 'mdd_name',
+        "G" => 'location',
+        "H" => 'min_recommend_num',
+        "I" => 'max_recommend_num',
+        "J" => 'time',
+        "K" => 'min_recommend_duration',
+        'L' => 'max_recommend_duration',
+        'M' => 'relation',
+        'N' => 'budget',
     );
 
     public static function init()

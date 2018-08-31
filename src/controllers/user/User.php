@@ -46,4 +46,28 @@ class User extends \apps\controllers\BaseController
             \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
         }
     }
+
+    /**
+     * 获取微信的appid
+     *
+     */
+    public function aGetOpenId()
+    {
+        $sCode = \apps\libs\Request::mGetParam('code', '');
+
+        $aParam = [
+            'grant_type' => 'authorization_code',
+            'appid'      => \apps\common\Constant::WX_APP_ID,
+            'secret'     => \apps\common\Constant::WX_APP_SECRENT,
+            'js_code'    => $sCode,
+        ];
+        $oRequest = \Requests::get(\apps\common\Constant::WX_API_JSCODE2SESSION, $aParam);
+
+        $aRet = json_decode($oRequest->body, true);
+        if ($aRet['errcode']) {
+            return \apps\libs\BuildReturn::aBuildReturn([], $aRet['errcode'], $aRet['errmsg']);
+        }
+
+        \apps\libs\BuildReturn::aBuildReturn(json_decode($oRequest->body, true));
+    }
 }
