@@ -1,8 +1,8 @@
 {
   "name": "mfw/chufaba",
-  "description": "travel tool",
+  "description": "journey",
   "license": "MIT",
-  "keywords": ["travel"],
+  "keywords": ["journey"],
   "version": "1.0.0",
   "authors": [
     {
@@ -10,6 +10,7 @@
       "email": "shiyibo@mafengwo.com"
     }
   ],
+  "minimum-stability": "dev",
   "require" : {
     "php": "*",
     "noahbuscher/macaw": "dev-master",
@@ -19,7 +20,8 @@
     "aura/web": "*",
     "respect/validation" : "*",
     "laravelbook/ardent": "3.*",
-    "phpoffice/phpspreadsheet": "*"
+    "phpoffice/phpspreadsheet": "*",
+    "rmccue/requests": "*"
   },
 
   "autoload" : {
