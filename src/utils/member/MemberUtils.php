@@ -24,6 +24,7 @@ class MemberUtils
         'free_time'  => '',
         'busy_time'  => '',
         'memo'       => '',
+        'forum_id'   => '',
     ];
 
     public static function aGetAddParam()

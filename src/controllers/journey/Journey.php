@@ -20,13 +20,16 @@ class Journey extends \apps\controllers\BaseController
     public function bAdd()
     {
         try {
-            echo json_encode($_POST); exit;
-
             $aParam = \apps\utils\journey\JourneyUtils::aGetAddParam();
 
             // \apps\utils\journey\JourneyUtils::bAddParamValid($aParam);
 
             $iInsertId = \apps\models\journey\Journey::bAdd($aParam);
+
+            // 发起之后加入一个forum_id用来发送推送，这个应该弄一个message，异步去搞
+            if ($iInsertId) {
+                \apps\models\push\Push::iAddForumId($aParam['journey_id'], $aParam['uid'], $aParam['forum_id']);
+            }
 
             \apps\libs\BuildReturn::aBuildReturn(['id' => $iInsertId]);
 

@@ -10,6 +10,7 @@ namespace apps\controllers\member;
 
 use apps\libs\Exception;
 use apps\libs\Log;
+use apps\models\push\Push;
 use apps\models\user\User;
 
 class Member extends \apps\controllers\BaseController
@@ -50,14 +51,6 @@ class Member extends \apps\controllers\BaseController
                 throw  new Exception('', Exception::ERR_PERMISSION_ERROR);
             }
 
-            // 先插入用户的信息
-            $aUser = [
-                'uid' => \apps\libs\Request::mGetParam('uid', ''),
-                'portrait' => \apps\libs\Request::mGetParam('portrait', ''),
-                'nick_name' => \apps\libs\Request::mGetParam('nick_name', ''),
-            ];
-            \apps\models\user\User::bAdd($aUser);
-
             // 然后是旅行团信息
             $iInsertId = \apps\models\member\Member::bAdd($aParam);
 
@@ -72,6 +65,9 @@ class Member extends \apps\controllers\BaseController
                 \apps\models\journey\Journey::iWaitVote($aParam['journey_id']);
             }
 
+            // 缓存一个forum_id用来保存推送的forum_id
+            \apps\models\push\Push::iAddForumId($aParam['journey_id'], $aParam['uid'], $aParam['forum_id']);
+
             \apps\libs\BuildReturn::aBuildReturn(['id' => $iInsertId]);
 
         } catch (\Exception $e) {
@@ -80,5 +76,19 @@ class Member extends \apps\controllers\BaseController
             Log::vWarning('Member::add fail', ['param' => $aParam, 'errno' => $errno, 'msg' => $errmsg]);
             \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
         }
+    }
+
+    /**
+     * 保存用户的forum_id
+     */
+    public function aSaveForumId()
+    {
+        $iJourneyId = \apps\libs\Request::mGetParam('journey_id', 0);
+        $sUid       = \apps\libs\Request::mGetParam('uid', '');
+        $sForumId   = \apps\libs\Request::mGetParam('forum_id', '');
+
+        $iRet = \apps\models\push\Push::iAddForumId($iJourneyId, $sUid, $sForumId);
+
+        \apps\libs\BuildReturn::aBuildReturn(['ret' => $iRet]);
     }
 }

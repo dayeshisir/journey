@@ -20,6 +20,8 @@ Macaw::post('/journey/add', 'apps\controllers\journey\Journey@bAdd');
 
 Macaw::post('/member/add', 'apps\controllers\member\Member@bAdd');
 
+Macaw::post('/member/saveForumId', 'apps\controllers\member\Member@aSaveForumId');
+
 Macaw::get('/journey/getJourneyList', 'apps\controllers\journey\Journey@aJourneyList');
 
 Macaw::get('/journey/getLeaderIntenion', 'apps\controllers\journey\Journey@aGetLeaderIntention');

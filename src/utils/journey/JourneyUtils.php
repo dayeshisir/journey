@@ -27,6 +27,7 @@ class JourneyUtils
         'max_budget'  => 0,
         'desc'        => '',
         'uid'         => '',
+        'forum_id'    => '',
     ];
 
     public static function aGetAddParam()
