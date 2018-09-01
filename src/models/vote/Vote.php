@@ -58,4 +58,20 @@ class Vote extends \Illuminate\Database\Eloquent\Model
 
         return $aVote;
     }
+
+    /**
+     * 得到某个具体的用户在某个局的投票详情
+     *
+     * @param $journey
+     * @param $spot_id
+     * @param $uid
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public static function aGetUserVote($journey, $spot_id, $uid)
+    {
+        $oQuery = self::query()->where('journey_id','=', $journey)
+            ->where('uid','=', $uid)->where('spot_id', '=', $spot_id);
+
+        return $oQuery->get();
+    }
 }

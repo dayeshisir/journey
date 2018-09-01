@@ -28,7 +28,7 @@ class Journey extends \apps\controllers\BaseController
 
             // 发起之后加入一个forum_id用来发送推送，这个应该弄一个message，异步去搞
             if ($iInsertId) {
-                \apps\models\push\Push::iAddForumId($aParam['journey_id'], $aParam['uid'], $aParam['forum_id']);
+                \apps\models\push\Push::iAddForumId($iInsertId, $aParam['uid'], $aParam['forum_id']);
             }
 
             \apps\libs\BuildReturn::aBuildReturn(['id' => $iInsertId]);
@@ -117,9 +117,10 @@ class Journey extends \apps\controllers\BaseController
      * 局友版收集用户信息时展示局头写的意向
      *
      */
-    public function aGetLeaderIntention()
+    public function aPrepareJoin()
     {
-        $iJourneyId = \apps\libs\Request::mGetParam('journey_id', 0);
+        $iJourneyId = intval(\apps\libs\Request::mGetParam('journey_id', 0));
+        $sUid       = \apps\libs\Request::mGetParam('uid', '');
 
         try {
             if ($iJourneyId <= 0) {
@@ -127,24 +128,18 @@ class Journey extends \apps\controllers\BaseController
                 throw new Exception('', Exception::ERR_PARAM_ERROR);
             }
 
-            $aJourney = \apps\models\journey\Journey::aGetJourneyByIds([$iJourneyId]);
+            $aJourney = \apps\models\journey\Journey::aGetDetail($iJourneyId);
             if (empty($aJourney)) {
 
                 throw new Exception('', Exception::ERR_PARAM_ERROR);
             }
 
-            $iLeaderId = $aJourney[0]['created_uid'];
-            $aParam = [
-                'uid'        => $iLeaderId,
-                'journey_id' => $iJourneyId,
-            ];
-            $aMember = \apps\models\member\Member::aGetDetail($aParam);
-            if (empty($aMember)) {
+            $aRet = \apps\controllers\member\Member::aBuildUserStatus($iJourneyId, $sUid);
+            $aRet['start_time'] = $aJourney['start_time'];
+            $aRet['end_time']   = $aJourney['end_time'];
+            $aRet['desc']       = $aJourney['desc'];
 
-                throw new Exception('', Exception::ERR_PARAM_ERROR);
-            }
-
-            \apps\libs\BuildReturn::aBuildReturn($aMember);
+            \apps\libs\BuildReturn::aBuildReturn($aRet);
         } catch (\Exception $e) {
             $errno  = $e->getCode();
             $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
@@ -219,6 +214,10 @@ class Journey extends \apps\controllers\BaseController
         }
     }
 
+    /**
+     * 设置提前成局
+     *
+     */
     public function iSetMemberFull()
     {
         $iJourneyId = intval(\apps\libs\Request::mGetParam('journey_id', 0));

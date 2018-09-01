@@ -13,6 +13,7 @@ create table `spots` (
   `max_days`   INT(10)          NOT NULL DEFAULT 0  COMMENT '最大推荐天数',
   `time`       VARCHAR(1024)    NOT NULL DEFAULT '' COMMENT '最宜游玩时间',
   `relation`   TINYINT          NOT NULL DEFAULT 0  COMMENT '关系类型',
+  `budget`     TINYINT          NOT NULL DEFAULT 0  COMMENT '预算类型',
   `min_budget` INT(10)          NOT NULL DEFAULT 0  COMMENT '预算范围',
   `max_budget` INT(10)          NOT NULL DEFAULT 0  COMMENT '预算范围',
   `min_sbudget`INT(10)          NOT NULL DEFAULT 0  COMMENT '显示的最小预算',

@@ -77,4 +77,11 @@ class Constant
     const FORUMID_TYPE_CREATE_SUFFIX  = 'create';
     const FORUMID_TYPE_JOIN_SUFFIX    = 'join';
     const FORUMID_TYPE_PREPARE_SUFFIX = 'prepare';
+
+    /**
+     * 用户状态流转
+     */
+    const USER_STATUS_INIT    = 0;
+    const USER_STATUS_JOIN    = 1;
+    const USER_STATUS_VOTED   = 2;
 }

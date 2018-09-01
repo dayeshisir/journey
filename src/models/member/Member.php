@@ -55,10 +55,12 @@ class Member  extends \Illuminate\Database\Eloquent\Model
             return [];
         }
 
-        $aMember = $oMember->toArray();
-        $aRet = $aMember[0];
-        $aRet['busy_time'] = json_decode($aRet['busy_time'], true);
-        $aRet['free_time'] = json_decode($aRet['free_time'], true);
+        $aRet = $oMember->toArray();
+
+        if (!empty($aRet)) {
+            $aRet['busy_time'] = json_decode($aRet['busy_time'], true);
+            $aRet['free_time'] = json_decode($aRet['free_time'], true);
+        }
 
         return $aRet;
     }

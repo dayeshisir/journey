@@ -22,9 +22,11 @@ Macaw::post('/member/add', 'apps\controllers\member\Member@bAdd');
 
 Macaw::post('/member/saveForumId', 'apps\controllers\member\Member@aSaveForumId');
 
+Macaw::get('/member/status', 'apps\controllers\member\Member@aUserStatus');
+
 Macaw::get('/journey/getJourneyList', 'apps\controllers\journey\Journey@aJourneyList');
 
-Macaw::get('/journey/getLeaderIntenion', 'apps\controllers\journey\Journey@aGetLeaderIntention');
+Macaw::get('/journey/prepareJoin', 'apps\controllers\journey\Journey@aPrepareJoin');
 
 Macaw::get('/journey/getJourneyIntention', 'apps\controllers\journey\Journey@aGetJourneyIntention');
 

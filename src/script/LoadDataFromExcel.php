@@ -70,7 +70,7 @@ class LoadData
             }
 
             $aRecommendTime   = self::aGetRecommendTime($aNew['time']);
-            $aRecommendBudget = self::aGetRecommendBudget($aNew['budget']);
+            // $aRecommendBudget = self::aGetRecommendBudget($aNew['budget']);
             $iRelation        = self::iGetRecommendRelation($aNew['relation']);
 
             $aData[] = [
@@ -86,8 +86,9 @@ class LoadData
                 'min_days'           => $aNew['min_recommend_duration'],
                 'max_days'           => $aNew['max_recommend_duration'],
                 'relation'           => $iRelation,
-                'min_budget'         => $aRecommendBudget['min_budget'],
-                'max_budget'         => $aRecommendBudget['max_budget'],
+                'budget'             => $aNew['budget'],
+//                'min_budget'         => $aRecommendBudget['min_budget'],
+//                'max_budget'         => $aRecommendBudget['max_budget'],
             ];
         }
 

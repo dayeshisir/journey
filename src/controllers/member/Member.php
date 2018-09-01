@@ -91,4 +91,74 @@ class Member extends \apps\controllers\BaseController
 
         \apps\libs\BuildReturn::aBuildReturn(['ret' => $iRet]);
     }
+
+    /**
+     * 获取用户的状态信息
+     *
+     */
+    public function aUserStatus()
+    {
+        $iJourney = intval(\apps\libs\Request::mGetParam('journey_id', 0));
+        $sUid     = \apps\libs\Request::mGetParam('uid', '');
+
+
+        $aStatus = self::aBuildUserStatus($iJourney, $sUid);
+
+        \apps\libs\BuildReturn::aBuildReturn($aStatus);
+    }
+
+    /**
+     * @param $journey
+     * @param $spot
+     * @param $uid
+     * @return array
+     */
+    public static function aBuildUserStatus($journey, $uid)
+    {
+        $aRet = [
+            'journey_status' => \apps\common\Constant::JOURNEY_STATUS_INIT,
+            'user_status'    => \apps\common\Constant::USER_STATUS_INIT,
+            'is_leader'      => 0,
+        ];
+
+        $aJourney = \apps\models\journey\Journey::aGetDetail($journey);
+        if (empty($aJourney)) {
+
+            return $aRet;
+        }
+
+        $aRet['journey_status'] = $aJourney['status'];
+        $aRet['is_leader'] = strval($aJourney['uid']) == strval($uid) ? 1 : 0;
+
+        // 还没人开始加入，直接返回
+        if ($aJourney['status'] < \apps\common\Constant::JOURNEY_STATUS_JOIN) {
+
+            return $aRet;
+        }
+
+        $aMember = \apps\models\member\Member::aGetDetail(['journey_id' => $journey, 'uid' => $uid]);
+        if (empty($aMember)) {
+
+            return $aRet;
+        }
+        $aRet['user_status'] = \apps\common\Constant::USER_STATUS_JOIN;
+
+        // 还没开始投票，可以返回了
+        if ($aJourney['status'] < \apps\common\Constant::JOURNEY_STATUS_VOTE) {
+
+            return $aRet;
+        }
+
+        $spot  = intval($aJourney['spot_id']);
+        $aVote = \apps\models\vote\Vote::aGetUserVote($journey, $spot, $uid);
+        if (empty($aVote)) {
+
+            return $aRet;
+        }
+
+        $aRet['user_status'] = \apps\common\Constant::USER_STATUS_VOTED;
+
+        return $aRet;
+    }
+
 }

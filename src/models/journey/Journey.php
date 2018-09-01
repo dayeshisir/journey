@@ -64,6 +64,17 @@ class Journey extends \Illuminate\Database\Eloquent\Model
         return $aJourneyList->toArray();
     }
 
+    public static function aGetDetail($id)
+    {
+        $oJourneyQuery = self::query();
+        $aJourneyList  = $oJourneyQuery->find($id);
+        if (empty($aJourneyList)) {
+            return [];
+        }
+
+        return $aJourneyList->toArray();
+    }
+
     /**
      *  初始状态 => 等待成员加入 状态
      *
