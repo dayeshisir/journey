@@ -210,12 +210,12 @@ class Journey extends \apps\controllers\BaseController
                 }
 
                 $aCurFreeTime = json_decode($member['free_time'], true);
-                $aFreeTime[$member['openid']] = $aCurFreeTime;
+                $aFreeTime[$member['uid']] = $aCurFreeTime;
 
                 $aUids[] = $member['uid'];
             }
 
-            $aFreeTime[$aJourney['uid']] = [['start_time' => $aJourney['start_time'], 'end_time' => $aJourney['end_time']]];
+            $aFreeTime[$aJourney['id']] = [['start_time' => $aJourney['start_time'], 'end_time' => $aJourney['end_time']]];
 
             $aShowTime = \apps\utils\common\Time::aFindIntersectTime($aFreeTime);
 
