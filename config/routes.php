@@ -36,6 +36,10 @@ Macaw::get('/user/openid', 'apps\controllers\user\User@aGetOpenId');
 
 Macaw::get('/spot/list', 'apps\controllers\spot\Spot@aGetList');
 
+Macaw::post('/push/add', 'apps\controllers\push\Push@aAddPush');
+
+Macaw::post('/push/consume', 'apps\controllers\push\Push@aConsumePush');
+
 
 Macaw::get('/journey/check', function() {
     echo json_encode([

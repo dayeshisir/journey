@@ -10,13 +10,13 @@ namespace apps\models\push;
 
 use Predis\Client;
 
-class Forum
+class Push
 {
     protected static $oRedis = null;
 
     public static function init()
     {
-        if (null !== self::$oRedis) {
+        if (null === self::$oRedis) {
             self::$oRedis = new Client(\apps\common\Config::$aRedisConf);
         }
 
@@ -27,8 +27,22 @@ class Forum
     {
         self::init();
 
-        $sKey = sprintf("%d_%s", $iJourneyId, $sUid);
+        $sKey = self::sGetKey($iJourneyId, $sUid);
 
         return self::$oRedis->rpush($sKey, $sForumId);
+    }
+
+    public static function iConsumeForumId($iJourneyId, $sUid)
+    {
+        self::init();
+
+        $sKey = self::sGetKey($iJourneyId, $sUid);
+
+        return self::$oRedis->lpop($sKey);
+    }
+
+    protected static function sGetKey($journey, $uid)
+    {
+        return sprintf("%d_%s", $journey, $uid);
     }
 }
