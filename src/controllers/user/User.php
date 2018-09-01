@@ -56,7 +56,7 @@ class User extends \apps\controllers\BaseController
         $sCode     = \apps\libs\Request::mGetParam('code', '');
         $aUserInfo = \apps\libs\Request::mGetParam('userInfo', '');
 
-        \apps\libs\Log::vWarning('user', json_encode($aUserInfo));
+        // \apps\libs\Log::vWarning('user', $aUserInfo);
 
         $appId = \apps\common\Constant::WX_APP_ID;
         $secret = \apps\common\Constant::WX_APP_SECRENT;
