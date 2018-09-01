@@ -57,4 +57,26 @@ class Spot extends \Illuminate\Database\Eloquent\Model
 
         return $aRet;
     }
+
+    public static function aGetList($page, $size)
+    {
+        $oQuery = self::query();
+        $iOffset = ($page - 1) * $size;
+        $oQuery->offset($iOffset)->limit($size);
+
+        $aList = $oQuery->get();
+        if (empty($aList)) {
+            return [];
+        }
+
+        $aRet = [];
+        foreach ($aList as $spot) {
+            $spot['pic'] = json_decode($spot['pic'], true);
+            $spot['time'] = json_decode($spot['time'], true);
+
+            $aRet[] = $spot;
+        }
+
+        return $aRet;
+    }
 }

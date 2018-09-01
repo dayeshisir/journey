@@ -47,9 +47,12 @@ class Vote extends BaseController
     {
         $iJourneyId = \apps\libs\Request::mGetParam('journey_id', 0);
         $iSpotId    = \apps\libs\Request::mGetParam('spot_id', 0);
+        $sUid       = \apps\libs\Request::mGetParam('uid', '');
         try {
             $aVoteList = \apps\models\vote\Vote::aJourneyVote($iJourneyId, $iSpotId);
-            $aVoteMap = [];
+            $aVoteMap  = \apps\utils\common\Util::array2map($aVoteList, 'uid');
+            $aMember   = \apps\models\member\Member::aGetJourneyGroup($iJourneyId);
+
         } catch (Exception $e) {
 
         }

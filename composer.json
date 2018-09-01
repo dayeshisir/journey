@@ -10,7 +10,6 @@
       "email": "shiyibo@mafengwo.com"
     }
   ],
-  "minimum-stability": "dev",
   "require" : {
     "php": "*",
     "noahbuscher/macaw": "dev-master",

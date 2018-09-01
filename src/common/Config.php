@@ -11,5 +11,9 @@ namespace apps\common;
 
 class Config
 {
-
+    public static $aRedisConf = [
+        'scheme' => 'tcp',
+        'host'   => '127.0.01',
+        'port'   => 6379,
+    ];
 }

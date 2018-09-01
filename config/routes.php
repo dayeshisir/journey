@@ -32,7 +32,10 @@ Macaw::get('/test/demo', 'apps\controllers\test\Test@aDemo');
 
 Macaw::get('/test/echo', 'apps\controllers\test\Test@aEcho');
 
-Macaw::post('/user/openid', 'apps\controllers\user\User@aGetOpenId');
+Macaw::get('/user/openid', 'apps\controllers\user\User@aGetOpenId');
+
+Macaw::get('/spot/list', 'apps\controllers\spot\Spot@aGetList');
+
 
 Macaw::get('/journey/check', function() {
     echo json_encode([

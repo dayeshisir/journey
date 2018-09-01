@@ -54,9 +54,8 @@ class User extends \apps\controllers\BaseController
     public function aGetOpenId()
     {
         $sCode     = \apps\libs\Request::mGetParam('code', '');
-        $aUserInfo = \apps\libs\Request::mGetParam('userInfo', '');
-
-        // \apps\libs\Log::vWarning('user', $aUserInfo);
+        $sUserInfo = \apps\libs\Request::mGetParam('userInfo', '');
+        $aUserInfo = json_decode($sUserInfo, true);
 
         $appId = \apps\common\Constant::WX_APP_ID;
         $secret = \apps\common\Constant::WX_APP_SECRENT;

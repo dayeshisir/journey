@@ -26,7 +26,7 @@ class JourneyUtils
         'min_budget'  => 0,
         'max_budget'  => 0,
         'desc'        => '',
-        'uid'         => 0,
+        'uid'         => '',
     ];
 
     public static function aGetAddParam()

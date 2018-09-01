@@ -65,4 +65,16 @@ class Constant
 
     const WX_APP_ID      = 'wx2564f35414198d97';
     const WX_APP_SECRENT = 'ed08795774461f505feab3d997235eca';
+
+
+    /**
+     * 存储forum_id
+     */
+    const FORUMID_TYPE_CREATE  = 1;
+    const FORUMID_TYPE_JOIN    = 2;
+    const FORUMID_TYPE_PREPARE = 3;
+
+    const FORUMID_TYPE_CREATE_SUFFIX  = 'create';
+    const FORUMID_TYPE_JOIN_SUFFIX    = 'join';
+    const FORUMID_TYPE_PREPARE_SUFFIX = 'prepare';
 }

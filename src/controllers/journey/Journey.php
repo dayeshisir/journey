@@ -20,9 +20,11 @@ class Journey extends \apps\controllers\BaseController
     public function bAdd()
     {
         try {
+            echo json_encode($_POST); exit;
+
             $aParam = \apps\utils\journey\JourneyUtils::aGetAddParam();
 
-            \apps\utils\journey\JourneyUtils::bAddParamValid($aParam);
+            // \apps\utils\journey\JourneyUtils::bAddParamValid($aParam);
 
             $iInsertId = \apps\models\journey\Journey::bAdd($aParam);
 
