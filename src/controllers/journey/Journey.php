@@ -150,19 +150,43 @@ class Journey extends \apps\controllers\BaseController
         }
     }
 
+    public function aGetVoteJourney()
+    {
+        $iJourney = intval(\apps\libs\Request::mGetParam('journey_id', 0));
+
+        try {
+            $aCandidateSpots = \apps\controllers\strategy\Strategy::aGetCandidate();
+
+            $aCandidateMap = \apps\utils\common\Util::array2map($aCandidateSpots, 'spot_id');
+            $aSpotIds = array_column($aCandidateSpots, 'spot_id');
+
+            $aUsed = \apps\redis\MyRedis::aScan($iJourney);
+
+            $aNotUsed = array_diff($aSpotIds, $aUsed);
+
+        } catch (Exception $e) {
+            $errno  = $e->getCode();
+            $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
+            Log::vWarning('Journey::aGetVoteJourney fail', ['param' => ['journey_id' => $iJourney,],
+                'errno' => $errno, 'msg' => $errmsg]);
+
+            \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
+        }
+    }
+
     /**
      * 详情页-组局中
      */
-    public function aGetJourneyIntention()
+    public function aGetJoinJourney()
     {
-        $iJourneyId = \apps\libs\Request::mGetParam('journey_id', 0);
+        $iJourneyId = intval(\apps\libs\Request::mGetParam('journey_id', 0));
         try {
             if ($iJourneyId <= 0) {
 
                 throw new Exception('', Exception::ERR_PARAM_ERROR);
             }
 
-            $aJourney = \apps\models\journey\Journey::aGetJourneyByIds([$iJourneyId]);
+            $aJourney = \apps\models\journey\Journey::aGetDetail($iJourneyId);
             if (empty($aJourney)) {
 
                 throw new Exception('', Exception::ERR_PARAM_ERROR);
@@ -172,7 +196,8 @@ class Journey extends \apps\controllers\BaseController
             $iAnyNum      = 0;
             $iChinaNum    = 0;
             $iInternalNum = 0;
-            $aBusyTime    = [];
+            $aFreeTime    = [];
+            $aUids        = [];
             foreach ($aMember as $member) {
                 if (\apps\common\Constant::INTENTION_TYPE_ANY === intval($member['intention'])) {
                     $iAnyNum++;
@@ -184,23 +209,30 @@ class Journey extends \apps\controllers\BaseController
                     $iInternalNum++;
                 }
 
-                $aCurBusyTime = json_decode($member['busy_time'], true);
-                if (!empty($aCurBusyTime)) {
-                    $aBusyTime = array_merge($aBusyTime, $aCurBusyTime);
-                }
+                $aCurFreeTime = json_decode($member['free_time'], true);
+                $aFreeTime[$member['openid']] = $aCurFreeTime;
+
+                $aUids[] = $member['uid'];
             }
 
+            $aFreeTime[$aJourney['uid']] = [['start_time' => $aJourney['start_time'], 'end_time' => $aJourney['end_time']]];
+
+            $aShowTime = \apps\utils\common\Time::aFindIntersectTime($aFreeTime);
+
+            // 获取用户信息
+            $aUserInfo = \apps\models\user\User::aGetUserByIds($aUids);
+
             $aRet = [
-                'create_time' => $aJourney[0]['created_at'],
+                'create_time' => $aJourney['created_at'],
                 'duration'    => \apps\common\Constant::INTERVAL_WAIT_JOIN,
-                'target_num'  => $aJourney[0]['people_num'],
-                'current_num' => count($aMember),
+                'target_num'  => $aJourney['people_num'],
+                'user'        => $aUserInfo,
                 'intention'   => [
                     'any'         => $iAnyNum,
                     'china'       => $iChinaNum,
                     'internation' => $iInternalNum,
                 ],
-                'busy_time'  => $aBusyTime,
+                'free_time'  => $aShowTime,
             ];
 
             \apps\libs\BuildReturn::aBuildReturn($aRet);
@@ -235,7 +267,7 @@ class Journey extends \apps\controllers\BaseController
             }
             $aJourney = $aJourney[0];
 
-            if ($iUid !== intval($aJourney['created_uid'])) {
+            if ($iUid !== intval($aJourney['uid'])) {
                 throw new Exception('', Exception::ERR_PERMISSION_ERROR);
             }
 

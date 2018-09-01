@@ -12,24 +12,10 @@ use Monolog\Handler\StreamHandler;
 
 require "../vendor/autoload.php";
 
+date_default_timezone_set("Asia/Shanghai");
+
 \apps\libs\Log::init();
 \apps\libs\Request::init();
-
-//Predis\Autoloader::register();
-//
-//$client = new Predis\Client();
-//$client->incr('num');
-//$iNum = $client->get('num');
-//
-//echo "访问人数：$iNum\n";
-
-//$sLogFile = dirname(__FILE__) . "/../logs/ct.log";
-//
-//$oLog = new Logger("log");
-//
-//$oLog->pushHandler(new StreamHandler($sLogFile, Logger::WARNING));
-//
-//$oLog->warning("start");
 
 $oCapsule = new Capsule;
 

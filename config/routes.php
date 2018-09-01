@@ -28,7 +28,7 @@ Macaw::get('/journey/getJourneyList', 'apps\controllers\journey\Journey@aJourney
 
 Macaw::get('/journey/prepareJoin', 'apps\controllers\journey\Journey@aPrepareJoin');
 
-Macaw::get('/journey/getJourneyIntention', 'apps\controllers\journey\Journey@aGetJourneyIntention');
+Macaw::get('/journey/getJoinJourney', 'apps\controllers\journey\Journey@aGetJoinJourney');
 
 Macaw::post('/journey/setMemberFull', 'apps\controllers\journey\Journey@iSetMemberFull');
 
@@ -44,6 +44,9 @@ Macaw::post('/push/add', 'apps\controllers\push\Push@aAddPush');
 
 Macaw::post('/push/consume', 'apps\controllers\push\Push@aConsumePush');
 
+Macaw::get('/strategy/add', 'apps\controllers\strategy\Auxiliary@iAdd');
+
+Macaw::get('/strategy/get', 'apps\controllers\strategy\Auxiliary@aGet');
 
 Macaw::get('/journey/check', function() {
     echo json_encode([

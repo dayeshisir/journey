@@ -24,17 +24,19 @@ class Member extends \apps\controllers\BaseController
         $aParam = \apps\utils\member\MemberUtils::aGetAddParam();
 
         try {
-            \apps\utils\member\MemberUtils::bAddParamValid($aParam);
+            // \apps\utils\member\MemberUtils::bAddParamValid($aParam);
+
+            $aParam['free_time'] = json_decode($aParam['free_time'], true);
 
             $iUid = intval(\apps\libs\Request::mGetParam('uid', ''));
 
             // 首先获取旅局信息，指不定没有这个局呢
-            $aJourney = \apps\models\journey\Journey::aGetJourneyByIds([$aParam['journey_id']]);
+            $aJourney = \apps\models\journey\Journey::aGetDetail($aParam['journey_id']);
             if (empty($aJourney)) {
 
                 throw new Exception('', Exception::ERR_PARAM_ERROR);
             }
-            $aJourney = $aJourney[0];
+
             $iTargetNum = intval($aJourney['people_num']);
 
             // 获取该局是否人员满了
@@ -46,12 +48,14 @@ class Member extends \apps\controllers\BaseController
             }
 
             // 第一个加入的成员不是局的发起者，呃，什么地方出问题了
-            if (!$iCurNum && $iUid !== intval($aJourney['created_uid'])) {
+            if (!$iCurNum && $iUid !== intval($aJourney['uid'])) {
 
                 throw  new Exception('', Exception::ERR_PERMISSION_ERROR);
             }
 
             // 然后是旅行团信息
+            $iForumId  = $aParam['forum_id'];
+            unset($aParam['forum_id']);
             $iInsertId = \apps\models\member\Member::bAdd($aParam);
 
             // 队长加入了，局的状态由初始状态转为 等待成员加入
@@ -66,7 +70,7 @@ class Member extends \apps\controllers\BaseController
             }
 
             // 缓存一个forum_id用来保存推送的forum_id
-            \apps\models\push\Push::iAddForumId($aParam['journey_id'], $aParam['uid'], $aParam['forum_id']);
+            \apps\models\push\Push::iAddForumId($aParam['journey_id'], $aParam['uid'], $iForumId);
 
             \apps\libs\BuildReturn::aBuildReturn(['id' => $iInsertId]);
 

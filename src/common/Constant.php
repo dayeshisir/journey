@@ -47,7 +47,7 @@ class Constant
      * 时间上的限制
      */
     const INTERVAL_TIME_DAY  = 3600 * 24;
-    const INTERVAL_WAIT_JOIN = 14 * self::INTERVAL_TIME_DAY;
+    const INTERVAL_WAIT_JOIN = 3 * self::INTERVAL_TIME_DAY;
 
     /**
      * 各种状态

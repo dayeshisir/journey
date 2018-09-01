@@ -64,6 +64,12 @@ class Journey extends \Illuminate\Database\Eloquent\Model
         return $aJourneyList->toArray();
     }
 
+    /**
+     * 获取单个的局
+     *
+     * @param $id
+     * @return array
+     */
     public static function aGetDetail($id)
     {
         $oJourneyQuery = self::query();

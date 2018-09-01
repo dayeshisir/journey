@@ -51,7 +51,7 @@ class User extends \Illuminate\Database\Eloquent\Model
     {
         $aUids  = array_unique($aUids);
         $oQuery = self::query();
-        $aUser  = $oQuery->whereIn('uid', $aUids)->get();
+        $aUser  = $oQuery->whereIn('openid', $aUids)->get();
         if (empty($aUser)) {
             return [];
         }

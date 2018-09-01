@@ -34,7 +34,7 @@ class Strategy
      */
     const INTENTION_DIFF = 0.2;
 
-    public function aPickOne()
+    public static function aGetCandidate()
     {
         $iJourneyId = \apps\libs\Request::mGetParam('journey_id', 0);
 
@@ -46,7 +46,7 @@ class Strategy
 
         // 分析得到队员的出游意向
         $aCondition = [
-            'intention'  => $this->iGetIntention($aJurneyIntention),
+            'intention'  => self::iGetIntention($aJurneyIntention),
             'relation'   => $aJourney['relation'],
             'num'        => $aJourney['people_num'],
             'min_budget' => $aJourney['min_budget'],
@@ -56,9 +56,9 @@ class Strategy
         $aSpots = \apps\models\spot\Spot::aGetSpotsByCondition($aCondition);
 
         // 过滤时间
-        $aSpots = $this->filterTime($aSpots, $aJourney, $aJurneyIntention);
+        $aSpots = self::filterTime($aSpots, $aJourney, $aJurneyIntention);
 
-        return empty($aSpots) ? [] : $aSpots[0];
+        return $aSpots;
     }
 
     /**
@@ -69,7 +69,7 @@ class Strategy
      * @param $aIntention
      * @return array
      */
-    protected function filterTime($aSpots, $aJouney, $aIntention)
+    protected static function filterTime($aSpots, $aJouney, $aIntention)
     {
         // 首先，计算出队员选的时间的交集
         $ret = [];
@@ -107,7 +107,7 @@ class Strategy
      * @param $aIntention
      * @return int
      */
-    protected function iGetIntention($aIntention)
+    protected static function iGetIntention($aIntention)
     {
         if (empty($aIntention)) {
             return 0;
@@ -129,16 +129,16 @@ class Strategy
         $iAny = 1 - $fChinaRatio - $fInternationRatio;
 
         // rule 1 : 【国内】【国外】意向的人数比例都小于25%，则认为这个局没有目的地意向
-        if ($this->bSmaller($fChinaRatio, self::INTENTION_BASE) && $this->bSmaller($fInternationRatio, self::INTENTION_BASE)) {
+        if (self::bSmaller($fChinaRatio, self::INTENTION_BASE) && self::bSmaller($fInternationRatio, self::INTENTION_BASE)) {
             return \apps\common\Constant::INTENTION_TYPE_ANY;
         }
 
         // rule 3 : 【国内】或【国外】任一意向的人数比例超过60%，则认为这个意向为局的意向
-        if (!$this->bSmaller($fChinaRatio, self::INTENTION_WIN)) {
+        if (!self::bSmaller($fChinaRatio, self::INTENTION_WIN)) {
             return \apps\common\Constant::INTENTION_TYPE_CHINA;
         }
 
-        if (!$this->bSmaller($fInternationRatio, self::INTENTION_WIN)) {
+        if (!self::bSmaller($fInternationRatio, self::INTENTION_WIN)) {
             return \apps\common\Constant::INTENTION_TYPE_INTERNATION;
         }
 
@@ -154,7 +154,8 @@ class Strategy
             $fMinRatio = $fChinaRatio;
         }
 
-        if ($this->bSmaller($fMaxRatio, self::INTENTION_WIN) && !$this->bSmaller($fMinRatio, self::INTENTION_BASE) && !$this->bSmaller($fMaxRatio - $fMinRatio, self::INTENTION_DIFF)) {
+        if (self::bSmaller($fMaxRatio, self::INTENTION_WIN) && !self::bSmaller($fMinRatio, self::INTENTION_BASE)
+            && !self::bSmaller($fMaxRatio - $fMinRatio, self::INTENTION_DIFF)) {
             return $bChina ? \apps\common\Constant::INTENTION_TYPE_CHINA : \apps\common\Constant::INTENTION_TYPE_INTERNATION;
         }
 
@@ -167,10 +168,8 @@ class Strategy
      * @param $op2
      * @return bool
      */
-    protected function bSmaller($op1, $op2)
+    protected static function bSmaller($op1, $op2)
     {
         return abs($op1 - $op2) < self::INFINITE_NUM;
     }
-
-
 }
