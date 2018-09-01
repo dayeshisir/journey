@@ -37,12 +37,18 @@ class Exception extends \Exception
      */
     const ERR_PERMISSION_ERROR  = 40002;
 
+    /**
+     * 已经投过票了
+     */
+    const ERR_ALREADY_VOTED     = 40003;
+
     protected $aInternalErrorMap = [
         self::ERR_PARAM_ERROR => '参数错误',
         self::ERR_UID_ERROR   => '用户没登录',
         self::ERR_DB_ERROR    => 'DB 操作异常',
         self::ERR_MEMBER_FULL_ERROR => '人员满',
         self::ERR_PERMISSION_ERROR  => '权限不够',
+        self::ERR_ALREADY_VOTED     => '已投票',
     ];
 
     protected $aExportErrorMap = [
@@ -51,6 +57,7 @@ class Exception extends \Exception
         self::ERR_DB_ERROR    => '系统开小差，请稍后重试',
         self::ERR_MEMBER_FULL_ERROR => '您来晚了，局满员了',
         self::ERR_PERMISSION_ERROR  => '您权限不够，请查证后再次操作',
+        self::ERR_ALREADY_VOTED     => '您已经投过票了，请注意群消息',
     ];
 
     public function __construct($message = "", $code = 0, Throwable $previous = null)

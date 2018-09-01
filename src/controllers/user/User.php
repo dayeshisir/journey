@@ -51,10 +51,12 @@ class User extends \apps\controllers\BaseController
      * 获取微信的appid
      *
      */
-    protected function aGetOpenId()
+    public function aGetOpenId()
     {
         $sCode     = \apps\libs\Request::mGetParam('code', '');
         $aUserInfo = \apps\libs\Request::mGetParam('userInfo', '');
+
+        \apps\libs\Log::vWarning('user', json_encode($aUserInfo));
 
         $appId = \apps\common\Constant::WX_APP_ID;
         $secret = \apps\common\Constant::WX_APP_SECRENT;

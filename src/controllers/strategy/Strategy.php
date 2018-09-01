@@ -61,6 +61,14 @@ class Strategy
         return empty($aSpots) ? [] : $aSpots[0];
     }
 
+    /**
+     * 根据队员选的时间进行筛选
+     *
+     * @param $aSpots
+     * @param $aJouney
+     * @param $aIntention
+     * @return array
+     */
     protected function filterTime($aSpots, $aJouney, $aIntention)
     {
         // 首先，计算出队员选的时间的交集
