@@ -221,7 +221,7 @@ class Journey extends \apps\controllers\BaseController
         try {
             // 局信息
             $aJourney = \apps\models\journey\Journey::aGetDetail($iJourney);
-            $aMember  = \apps\models\member\Member::aGetJourneyGroup($iJourney);
+            $aMember  = \apps\models\member\Member::aGetJourneyGroup(['journey_id' => $iJourney]);
             $aSpot    = \apps\models\spot\Spot::aGetDetail($aJourney['spot_id']);
             $aVote    = \apps\models\vote\Vote::aJourneyVote($iJourney, $aJourney['spot_id']);
             $aUid     = array_column($aMember, 'uid');
