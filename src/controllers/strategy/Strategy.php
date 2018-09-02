@@ -106,28 +106,56 @@ class Strategy
         foreach ($aSpots as $spot) {
             $aTimes = $spot['time'];
             $bFit   = false;
+            $aFitTimeInterval = [];
+            // 一个景点可能有多个合适出行时间
             foreach ($aTimes as $time) {
-                $iCurStart = strtotime($time['start_time']);
-                $iCurEnd   = strtotime($time['end_time']);
-                
+                // 队员选出的时间间隔，可能会有多个区间
                 foreach ($aValidInterval as $interval) {
+                    // 队员的适宜时间
                     $iValidStartTime = strtotime($interval['start_time']);
                     $iValidEndTime   = strtotime($interval['end_time']);
-                    
-                    if ($iValidStartTime <= $iCurStart && $iValidEndTime >= $iCurEnd) {
-                        $bFit = true;
-                        break;
+
+                    // 策略匹配上队员的适宜年份，得到适宜出行时间
+                    $sYear           = date('Y', $iValidStartTime);
+                    $iCurStart       = strtotime($sYear . '-' . $time['start_time']);
+                    $iCurEnd         = strtotime($sYear . '-' . $time['end_time']);
+
+                    // 时间合适，即策略的适宜时间包含队员的适宜时间
+                    if ($iCurStart <= $iValidStartTime && $iCurEnd >= $iValidEndTime) {
+                        $iValidDays = self::iGetDays($iValidStartTime, $iValidEndTime);
+                        // 天数合适，即队员选出的适宜天数满足景点推荐的适宜天数
+                        if ($iValidDays >= $spot['min_days'] && $iValidDays <= $spot['max_num']) {
+                            $bFit = true;
+
+                            $aFitTimeInterval[] = $interval;
+                        }
                     }
                 }
+            }
 
-                if ($bFit) {
-                    $aRet[] = $spot;
-                    break;
-                }
+            if ($bFit) {
+                $aRet[$spot['id']] = [
+                    'spot' => $spot,
+                    'time' => $aFitTimeInterval,
+                ];
+
+                break;
             }
         }
 
         return $aRet;
+    }
+
+    /**
+     * 根据时间戳计算天数
+     *
+     * @param $iStart
+     * @param $iEnd
+     * @return float|int
+     */
+    protected static function iGetDays($iStart, $iEnd)
+    {
+        return ($iEnd - $iStart + \apps\common\Constant::INTERVAL_TIME_DAY)/\apps\common\Constant::INTERVAL_TIME_DAY;
     }
 
     /**

@@ -45,10 +45,9 @@ class Spot extends \Illuminate\Database\Eloquent\Model
     public static function aGetSpotsByCondition($aCondtion)
     {
         $oQuery = self::query();
-        if (!isset($aCondtion['intention'])) {
+        if (isset($aCondtion['intention'])) {
             $oQuery->where('lable', '=', $aCondtion['intention']);
         }
-        // $oQuery->where('relation', '=', $aCondtion['relation']);
         $oQuery->where('min_num', '<=', $aCondtion['people_num']);
         $oQuery->where('max_num', '>=', $aCondtion['people_num']);
         $oQuery->where('min_budget', '<=', $aCondtion['min_budget']);
@@ -111,10 +110,15 @@ class Spot extends \Illuminate\Database\Eloquent\Model
 
         $aRet = [];
         foreach ($aSpots as $spot) {
+            $spot = $spot->toArray();
+
             $spot['pic'] = json_decode($spot['pic'], true);
             $spot['time'] = json_decode($spot['time'], true);
 
-            $aRet[] = $spot->toArray();
+            $aRet[$spot->id] = [
+                'spot' => $spot,
+                'time' => $spot['time'],
+            ];
         }
 
         return $aRet;

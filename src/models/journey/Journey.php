@@ -25,7 +25,7 @@ class Journey extends \Illuminate\Database\Eloquent\Model
 
     protected $guard    = array('id',);
     protected $fillable = array('spot_id', 'relation', 'status', 'people_num', 'start_time',
-        'end_time', 'desc', 'min_budget', 'max_budget', 'uid', 'rstart_time', 'rend_time');
+        'end_time', 'desc', 'min_budget', 'max_budget', 'uid', 'rstart_time', 'rend_time', 'recommend_time');
     protected $hidden   = array();
 
     /**
@@ -88,12 +88,13 @@ class Journey extends \Illuminate\Database\Eloquent\Model
      * @param $spot
      * @return bool
      */
-    public static function iUpdateSpot($journey, $spot)
+    public static function iUpdateSpot($journey, $spot, $time)
     {
         $oJourney = self::query()->find($journey);
         $oJourney->spot_id     = $spot;
         $oJourney->rstart_time = '0000-00-00';
         $oJourney->rend_time   = '0000-00-00';
+        $oJourney->recommend_time = json_encode($time);
 
         return $oJourney->save();
     }

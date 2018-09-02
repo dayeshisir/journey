@@ -9,6 +9,7 @@ CREATE TABLE  `journeys`(
   `end_time`   DATE             NOT NULL DEFAULT '0000-00-00' COMMENT '结束时间',
   `rstart_time` DATE            NOT NULL DEFAULT '0000-00-00' COMMENT '推荐开始时间',
   `rend_time`   DATE            NOT NULL DEFAULT '0000-00-00' COMMENT '推荐结束时间',
+  `recommend_time` VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '推荐出行时间',
   `budget`     TINYINT          NOT NULL DEFAULT 0            COMMENT '0:无所谓',
   `min_budget` INT UNSIGNED NOT NULL DEFAULT 1 COMMENT '人均预算',
   `max_budget` INT UNSIGNED NOT NULL DEFAULT 1 COMMENT '人均预算',

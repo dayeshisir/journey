@@ -161,9 +161,9 @@ class Journey extends \apps\controllers\BaseController
     {
         $aCandidateSpots = \apps\controllers\strategy\Strategy::aGetCandidate();
 
-        $aCandidateMap = \apps\utils\common\Util::array2map($aCandidateSpots, 'id');
+        // $aCandidateMap = \apps\utils\common\Util::array2map($aCandidateSpots, 'id');
 
-        $aSpotIds = array_column($aCandidateSpots, 'id');
+        $aSpotIds = array_keys($aCandidateSpots);
 
         $aUsedSpot = \apps\utils\strategy\StrategyUtils::aGetSpot($journey);
 
@@ -172,16 +172,17 @@ class Journey extends \apps\controllers\BaseController
         // 如果随机用完了，重新来过
         if (empty($aNotUsedSpot)) {
             \apps\utils\strategy\StrategyUtils::iReset($journey);
-            $aNotUsedSpot = array_column($aCandidateSpots, 'id');
+            $aNotUsedSpot = $aSpotIds;
         }
 
         // 数组随机一下
         shuffle($aNotUsedSpot);
 
-        $aRecommandSpot = $aCandidateMap[$aNotUsedSpot[0]];
+        $aRecommandSpot = $aCandidateSpots[$aNotUsedSpot[0]]['spot'];
+        $aRecommandTime = $aCandidateSpots[$aNotUsedSpot[0]]['time'];
 
         // 绑定到数据库
-        \apps\models\journey\Journey::iUpdateSpot($journey, $aRecommandSpot['id']);
+        \apps\models\journey\Journey::iUpdateSpot($journey, $aRecommandSpot['id'], $aRecommandTime);
 
         // 更新到redis缓存
         \apps\utils\strategy\StrategyUtils::iAdd($journey, $aRecommandSpot['id']);
