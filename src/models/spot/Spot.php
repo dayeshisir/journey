@@ -109,6 +109,14 @@ class Spot extends \Illuminate\Database\Eloquent\Model
         $oQuery->offset(0)->limit(3);
         $aSpots = $oQuery->get();
 
-        return $aSpots->toArray();
+        $aRet = [];
+        foreach ($aSpots as $spot) {
+            $spot['pic'] = json_decode($spot['pic'], true);
+            $spot['time'] = json_decode($spot['time'], true);
+
+            $aRet[] = $aRet;
+        }
+
+        return $aRet;
     }
 }

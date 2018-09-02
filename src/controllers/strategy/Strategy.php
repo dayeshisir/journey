@@ -49,7 +49,6 @@ class Strategy
         // 分析得到队员的出游意向
         $aCondition = [
             'intention'  => self::iGetIntention($aJurneyIntention),
-            'relation'   => $aJourney['relation'],
             'num'        => $aJourney['people_num'],
             'min_budget' => $aJourney['min_budget'],
             'max_budget' => $aJourney['max_budget'],
@@ -57,6 +56,7 @@ class Strategy
 
         $aSpots = \apps\models\spot\Spot::aGetSpotsByCondition($aCondition);
 
+        // 根据关系过滤
         $aSpots = self::filterRelation($aSpots, $aJourney['relation']);
 
         // 过滤时间

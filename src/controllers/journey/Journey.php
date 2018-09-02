@@ -406,11 +406,16 @@ class Journey extends \apps\controllers\BaseController
             $ret = \apps\models\journey\Journey::iSetMemberFull($iJourneyId);
 
             // 成局，则绑定策略
+            $aRecommendSpot = [];
             if ($ret) {
-
+                $aRecommendSpot = $this->aGenSpot($iJourneyId);
             }
 
-            \apps\libs\BuildReturn::aBuildReturn($ret);
+            $aRet = [
+                'ret' => $ret,
+                'recommend_spot' => $aRecommendSpot,
+            ];
+            \apps\libs\BuildReturn::aBuildReturn($aRet);
         } catch (\Exception $e) {
             $errno  = $e->getCode();
             $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
