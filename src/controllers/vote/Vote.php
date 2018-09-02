@@ -33,15 +33,15 @@ class Vote extends BaseController
             $oVote = \apps\models\vote\Vote::oVote($aParam);
             $iVoteTime = strtotime($oVote->create_at);
 
-            if ($iNow > $iVoteTime) {
-                throw new Exception('', Exception::ERR_ALREADY_VOTED);
-            }
+//            if ($iNow > $iVoteTime) {
+//                throw new Exception('', Exception::ERR_ALREADY_VOTED);
+//            }
 
             \apps\libs\BuildReturn::aBuildReturn(['vote_id' => $oVote->id]);
         } catch (Exception $e) {
             $errno  = $e->getCode();
             $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
-            Log::vWarning('Member::add fail', ['param' => $aParam, 'errno' => $errno, 'msg' => $errmsg]);
+            \apps\libs\Log::vWarning('Member::add fail', ['param' => $aParam, 'errno' => $errno, 'msg' => $errmsg]);
             \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
         }
     }
