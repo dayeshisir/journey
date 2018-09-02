@@ -75,6 +75,11 @@ class Vote extends \Illuminate\Database\Eloquent\Model
         $oQuery = self::query()->where('journey_id','=', $journey)
             ->where('uid','=', $uid)->where('spot_id', '=', $spot_id);
 
-        return $oQuery->get();
+        $oVote = $oQuery->get();
+        if (null === $oVote) {
+            return [];
+        }
+
+        return $oVote->toArray();
     }
 }
