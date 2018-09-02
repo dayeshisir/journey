@@ -105,17 +105,18 @@ class Spot extends \Illuminate\Database\Eloquent\Model
     public static function aGetFakeSpots()
     {
         $oQuery = self::query();
-        $oQuery->offset(0)->limit(3);
-        $aSpots = $oQuery->get();
+        $oQuery->offset(0)->limit(10);
+        $oSpots = $oQuery->get();
+
+        $aSpots = $oSpots->toArray();
 
         $aRet = [];
         foreach ($aSpots as $spot) {
-            $spot = $spot->toArray();
 
             $spot['pic'] = json_decode($spot['pic'], true);
             $spot['time'] = json_decode($spot['time'], true);
 
-            $aRet[$spot->id] = [
+            $aRet[$spot['id']] = [
                 'spot' => $spot,
                 'time' => [
                     [
