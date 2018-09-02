@@ -145,15 +145,6 @@ class Journey extends \Illuminate\Database\Eloquent\Model
         return $oModel->save() ? 1 : 0;
     }
 
-    public static function iWaitVote($journeyId)
-    {
-        $oModel = self::query()->find($journeyId);
-        $oModel->status = \apps\common\Constant::JOURNEY_STATUS_VOTE;
-        $oModel->vote_time = date('Y-m-d H:i:s');
-
-        return $oModel->save() ? 1 : 0;
-    }
-
     /**
      * 流局
      * @param $journeyId

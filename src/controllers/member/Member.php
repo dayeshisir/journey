@@ -66,7 +66,7 @@ class Member extends \apps\controllers\BaseController
             // 所有人都入局，局的状态由等待用户加入转为等待投票
             $iCurNum++;
             if ($iCurNum >= $iTargetNum) {
-                \apps\models\journey\Journey::iWaitVote($aParam['journey_id']);
+                \apps\models\journey\Journey::iSetMemberFull($aParam['journey_id']);
             }
 
             // 缓存一个forum_id用来保存推送的forum_id
