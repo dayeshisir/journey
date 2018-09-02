@@ -224,26 +224,9 @@ class Journey extends \apps\controllers\BaseController
             $aMember  = \apps\models\member\Member::aGetJourneyGroup($iJourney);
             $aSpot    = \apps\models\spot\Spot::aGetDetail($aJourney['spot_id']);
             $aVote    = \apps\models\vote\Vote::aJourneyVote($iJourney, $aJourney['spot_id']);
-            $aUid     = array_column($aVote, 'uid');
+            $aUid     = array_column($aMember, 'uid');
             $aUser    = \apps\models\user\User::aGetUserByIds($aUid);
-            $aUserMap = \apps\utils\common\Util::array2map($aUser, 'uid');
-            $aVoteMap = [
-                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NONE] => [],
-                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_OK]   => [],
-                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NO]   => [],
-            ];
-            foreach ($aVote as $vote) {
-                $iVote = $vote['vote'];
-                $sUid  = $vote['uid'];
-
-                $aCurUser = [
-                    'nick_name' => $aUserMap[$sUid]['nick_name'],
-                    'portrait'  => $aUserMap[$sUid]['portrait'],
-                ];
-                $index = \apps\common\Config::$aVoteIndex[$iVote];
-                array_push($aVoteMap[$index], $aCurUser);
-            }
-
+            $aVoteMap = \apps\utils\journey\JourneyUtils::aGetVoteMap($aMember, $aVote, $aUser);
             $aRet = [
                 'spot' => $aSpot,
                 'vote_time' => $aJourney['vote_time'],

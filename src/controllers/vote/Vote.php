@@ -46,6 +46,9 @@ class Vote extends BaseController
         }
     }
 
+    /**
+     * 投票列表
+     */
     public function aVoteList()
     {
         $iJourneyId = intval(\apps\libs\Request::mGetParam('journey_id', 0));
@@ -53,20 +56,11 @@ class Vote extends BaseController
             $aJourney   = \apps\models\journey\Journey::aGetDetail($iJourneyId);
             $iSpotId    = $aJourney['spot_id'];
             $aVoteList  = \apps\models\vote\Vote::aJourneyVote($iJourneyId, $iSpotId);
-            $aUids      = array_column($aVoteList, 'uid');
-            $aMember    = \apps\models\user\User::aGetUserByIds($aUids);
-            $aMemberMap = \apps\utils\common\Util::array2map($aMember, 'uid');
+            $aMember    = \apps\models\member\Member::aGetJourneyGroup(['journey_id' => $iJourneyId]);
+            $aUids      = array_column($aMember, 'uid');
+            $aUser      = \apps\models\user\User::aGetUserByIds($aUids);
 
-            $aRet = [
-                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NONE] => [],
-                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NO]   => [],
-                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_OK]   => [],
-            ];
-            foreach ($aVoteList as $vote) {
-                $iVote = $vote['vote'];
-                $index = \apps\common\Config::$aVoteIndex[$iVote];
-                array_push($aRet[$index], $aMemberMap[$vote['uid']]);
-            }
+            $aRet = \apps\utils\journey\JourneyUtils::aGetVoteMap($aMember, $aVoteList, $aUser);
 
             \apps\libs\BuildReturn::aBuildReturn($aRet);
 

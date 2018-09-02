@@ -96,4 +96,50 @@ class JourneyUtils
 
         return true;
     }
+
+    /**
+     * @param $aMember
+     * @param $aVote
+     * @param $aUser
+     * @return array
+     */
+    public static function aGetVoteMap($aMember, $aVote, $aUser)
+    {
+        $aUserMap = \apps\utils\common\Util::array2map($aUser, 'uid');
+        $aVoteMap = [
+            \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NONE] => [],
+            \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_OK]   => [],
+            \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NO]   => [],
+        ];
+        $aVotedUid = [];
+        foreach ($aVote as $vote) {
+            $iVote = $vote['vote'];
+            $sUid  = $vote['uid'];
+            $aVotedUid[$sUid] = 1;
+
+            $aCurUser = [
+                'nick_name' => $aUserMap[$sUid]['nick_name'],
+                'portrait'  => $aUserMap[$sUid]['portrait'],
+            ];
+            $index = \apps\common\Config::$aVoteIndex[$iVote];
+            array_push($aVoteMap[$index], $aCurUser);
+        }
+
+        // 未投票用户
+        foreach ($aMember as $member) {
+            $sCurUid = $member['uid'];
+            if (isset($aVotedUid[$sCurUid])) {
+                continue;
+            }
+
+            $index = \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NONE];
+            $aCurUser = [
+                'nick_name' => $aUserMap[$sCurUid]['nick_name'],
+                'portrait'  => $aUserMap[$sCurUid]['portrait'],
+            ];
+            array_push($aVoteMap[$index], $aCurUser);
+        }
+
+        return $aVoteMap;
+    }
 }
