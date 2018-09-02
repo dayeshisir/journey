@@ -87,8 +87,9 @@ class Constant
     const USER_STATUS_VOTED   = 2;
 
     /**
-     *
+     * 投票状态
      */
+    const VOTE_STATUS_NONE    = 0;
     const VOTE_STATUS_OK      = 1;
     const VOTE_STATUS_NO      = 2;
 }

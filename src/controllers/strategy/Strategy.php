@@ -138,8 +138,6 @@ class Strategy
                     'spot' => $spot,
                     'time' => $aFitTimeInterval,
                 ];
-
-                break;
             }
         }
 
@@ -227,24 +225,5 @@ class Strategy
     protected static function bSmaller($op1, $op2)
     {
         return abs($op1 - $op2) < self::INFINITE_NUM;
-    }
-
-    public function aAddTest()
-    {
-        $iJourneyId = intval(\apps\libs\Request::mGetParam('journey_id', 0));
-        $iSpotId    = intval(\apps\libs\Request::mGetParam('spot_id', 0));
-
-        $iRet = \apps\utils\strategy\StrategyUtils::iZadd($iJourneyId, $iSpotId);
-
-        \apps\libs\BuildReturn::aBuildReturn(['ret' => $iRet]);
-    }
-
-    public function aGetTest()
-    {
-        $iJourneyId = intval(\apps\libs\Request::mGetParam('journey_id', 0));
-
-        $aRet = \apps\utils\strategy\StrategyUtils::aGetSpot($iJourneyId);
-
-        \apps\libs\BuildReturn::aBuildReturn($aRet);
     }
 }
