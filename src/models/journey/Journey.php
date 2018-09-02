@@ -78,7 +78,10 @@ class Journey extends \Illuminate\Database\Eloquent\Model
             return [];
         }
 
-        return $aJourneyList->toArray();
+        $aRet = $aJourneyList->toArray();
+        $aRet['time'] = json_decode($aRet['time'], true);
+
+        return $aRet;
     }
 
     /**

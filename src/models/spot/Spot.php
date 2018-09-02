@@ -117,7 +117,12 @@ class Spot extends \Illuminate\Database\Eloquent\Model
 
             $aRet[$spot->id] = [
                 'spot' => $spot,
-                'time' => $spot['time'],
+                'time' => [
+                    [
+                        'start_time' => '2018-' . $spot['time'][0]['start_time'],
+                        'end_time' => '2018-' . $spot['time'][0]['end_time'],
+                    ]
+                ],
             ];
         }
 

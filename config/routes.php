@@ -30,7 +30,7 @@ Macaw::get('/journey/prepareJoin', 'apps\controllers\journey\Journey@aPrepareJoi
 
 Macaw::get('/journey/getJoinJourney', 'apps\controllers\journey\Journey@aGetJoinJourney');
 
-Macaw::get('/journey/setMemberFull', 'apps\controllers\journey\Journey@iSetMemberFull');
+Macaw::post('/journey/setMemberFull', 'apps\controllers\journey\Journey@iSetMemberFull');
 
 Macaw::get('/journey/getSpot', 'apps\controllers\journey\Journey@aGetSpot');
 
