@@ -221,11 +221,12 @@ class Journey extends \apps\controllers\BaseController
         try {
             // 局信息
             $aJourney = \apps\models\journey\Journey::aGetDetail($iJourney);
+            $aMember  = \apps\models\member\Member::aGetJourneyGroup($iJourney);
             $aSpot    = \apps\models\spot\Spot::aGetDetail($aJourney['spot_id']);
             $aVote    = \apps\models\vote\Vote::aJourneyVote($iJourney, $aJourney['spot_id']);
             $aUid     = array_column($aVote, 'uid');
-            $aMember  = \apps\models\user\User::aGetUserByIds($aUid);
-            $aMemberMap = \apps\utils\common\Util::array2map($aMember, 'uid');
+            $aUser    = \apps\models\user\User::aGetUserByIds($aUid);
+            $aUserMap = \apps\utils\common\Util::array2map($aUser, 'uid');
             $aVoteMap = [
                 \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NONE] => [],
                 \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_OK]   => [],
@@ -236,8 +237,8 @@ class Journey extends \apps\controllers\BaseController
                 $sUid  = $vote['uid'];
 
                 $aCurUser = [
-                    'nick_name' => $aMemberMap[$sUid]['nick_name'],
-                    'portrait'  => $aMemberMap[$sUid]['portrait'],
+                    'nick_name' => $aUserMap[$sUid]['nick_name'],
+                    'portrait'  => $aUserMap[$sUid]['portrait'],
                 ];
                 $index = \apps\common\Config::$aVoteIndex[$iVote];
                 array_push($aVoteMap[$index], $aCurUser);
@@ -247,6 +248,7 @@ class Journey extends \apps\controllers\BaseController
                 'spot' => $aSpot,
                 'vote_time' => $aJourney['vote_time'],
                 'duration'  => \apps\common\Constant::INTERVAL_WAIT_VOTE,
+                'target_num'=> count($aMember),
                 'time'      => [
                     'start_time' => $aJourney['recommend_time'][0]['start_time'],
                     'end_time'   => $aJourney['recommend_time'][0]['end_time'],
