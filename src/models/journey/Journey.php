@@ -79,7 +79,7 @@ class Journey extends \Illuminate\Database\Eloquent\Model
         }
 
         $aRet = $aJourneyList->toArray();
-        $aRet['time'] = json_decode($aRet['time'], true);
+        $aRet['recommend_time'] = json_decode($aRet['recommend_time'], true);
 
         return $aRet;
     }
