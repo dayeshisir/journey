@@ -67,6 +67,8 @@ class Member extends \apps\controllers\BaseController
             $iCurNum++;
             if ($iCurNum >= $iTargetNum) {
                 \apps\models\journey\Journey::iSetMemberFull($aParam['journey_id']);
+
+                \apps\utils\journey\JourneyUtils::aGenSpot();
             }
 
             // 缓存一个forum_id用来保存推送的forum_id
