@@ -23,24 +23,40 @@ class StrategyUtils
         return self::$oRedis;
     }
 
-    public static function iZadd($journey, $spot)
+    public static function iAdd($journey, $spot)
     {
         self::init();
 
         $sKey = self::sGetKey($journey);
 
-        return self::$oRedis->sadd($sKey, $spot);
+        return self::$oRedis->rpush($sKey, $spot);
     }
 
-    public static function aGetSpot($jouney, $offset = 0)
+    public static function aGetSpot($jouney, $start = 0, $end = 1000)
     {
         self::init();
 
         $sKey = self::sGetKey($jouney);
 
-        $aRet = self::$oRedis->sscan($sKey, $offset);
+        $aRet = self::$oRedis->lrange($sKey, $start, $end);
 
-        return $aRet[1];
+        $aSpots = [];
+        foreach ($aRet as $spot) {
+            $aSpots[] = intval($spot);
+        }
+
+        return array_unique($aSpots);
+    }
+
+    public static function iReset($journey)
+    {
+        self::init();
+
+        $sKey = self::sGetKey($journey);
+
+        $iRet = self::$oRedis->del($sKey);
+
+        return $iRet;
     }
 
     protected static function sGetKey($journey)

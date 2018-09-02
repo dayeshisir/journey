@@ -48,7 +48,7 @@ class Spot extends \Illuminate\Database\Eloquent\Model
         if (!isset($aCondtion['intention'])) {
             $oQuery->where('lable', '=', $aCondtion['intention']);
         }
-        $oQuery->where('relation', '=', $aCondtion['relation']);
+        // $oQuery->where('relation', '=', $aCondtion['relation']);
         $oQuery->where('min_num', '<=', $aCondtion['people_num']);
         $oQuery->where('max_num', '>=', $aCondtion['people_num']);
         $oQuery->where('min_budget', '<=', $aCondtion['min_budget']);
@@ -101,5 +101,14 @@ class Spot extends \Illuminate\Database\Eloquent\Model
         $aRet['time'] = json_decode($aRet['time'], true);
 
         return $aRet;
+    }
+
+    public static function aGetFakeSpots()
+    {
+        $oQuery = self::query();
+        $oQuery->offset(0)->limit(3);
+        $aSpots = $oQuery->get();
+
+        return $aSpots->toArray();
     }
 }

@@ -36,6 +36,8 @@ class Strategy
 
     public static function aGetCandidate()
     {
+        return \apps\models\spot\Spot::aGetFakeSpots();
+
         $iJourneyId = \apps\libs\Request::mGetParam('journey_id', 0);
 
         $aJourneyList = \apps\models\journey\Journey::aGetJourneyByIds([$iJourneyId]);
@@ -55,10 +57,31 @@ class Strategy
 
         $aSpots = \apps\models\spot\Spot::aGetSpotsByCondition($aCondition);
 
+        $aSpots = self::filterRelation($aSpots, $aJourney['relation']);
+
         // 过滤时间
         $aSpots = self::filterTime($aSpots, $aJourney, $aJurneyIntention);
 
         return $aSpots;
+    }
+
+    /**
+     * 根据关系类型，筛选候选人
+     *
+     * @param $aSpots
+     * @param $iRelation
+     * @return array
+     */
+    protected static function filterRelation($aSpots, $iRelation)
+    {
+        $aRet = [];
+        foreach ($aSpots as $spot) {
+            if ($spot['relation'] & $iRelation) {
+                $aRet[] = $spot;
+            }
+        }
+
+        return $aRet;
     }
 
     /**

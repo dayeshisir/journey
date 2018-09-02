@@ -152,6 +152,41 @@ class Journey extends \apps\controllers\BaseController
     }
 
     /**
+     * 产生一个决策
+     *
+     * @param $journey
+     * @return mixed
+     */
+    protected function aGenSpot($journey)
+    {
+        $aCandidateSpots = \apps\controllers\strategy\Strategy::aGetCandidate();
+
+        $aCandidateMap = \apps\utils\common\Util::array2map($aCandidateSpots, 'id');
+
+        $aSpotIds = array_column($aCandidateSpots, 'id');
+
+        $aUsedSpot = \apps\utils\strategy\StrategyUtils::aGetSpot($journey);
+
+        $aNotUsedSpot = array_diff($aSpotIds, $aUsedSpot);
+
+        // 如果随机用完了，重新来过
+        if (empty($aNotUsedSpot)) {
+            \apps\utils\strategy\StrategyUtils::iReset($journey);
+            $aNotUsedSpot = array_column($aCandidateSpots, 'id');
+        }
+
+        // 数组随机一下
+        shuffle($aNotUsedSpot);
+
+        $aRecommandSpot = $aCandidateMap[$aNotUsedSpot[0]];
+
+        // 更新到redis缓存
+        \apps\utils\strategy\StrategyUtils::iAdd($journey, $aRecommandSpot['id']);
+
+        return $aRecommandSpot;
+    }
+
+    /**
      * 获取推荐给用户的spot
      *
      */
@@ -160,22 +195,7 @@ class Journey extends \apps\controllers\BaseController
         $iJourney = intval(\apps\libs\Request::mGetParam('journey_id', 0));
 
         try {
-            $aCandidateSpots = \apps\controllers\strategy\Strategy::aGetCandidate();
-
-            $aCandidateMap = \apps\utils\common\Util::array2map($aCandidateSpots, 'spot_id');
-            $aSpotIds = array_column($aCandidateSpots, 'spot_id');
-
-            $aUsedSpot = \apps\utils\strategy\StrategyUtils::aGetSpot($iJourney);
-
-            $aNotUsedSpot = array_diff($aSpotIds, $aUsedSpot);
-
-            $aRecommandSpot = [];
-            if (!empty($aNotUsedSpot)) {
-                $aRecommandSpot = $aCandidateMap[$aNotUsedSpot[0]];
-            }
-
-            // 更新到redis缓存
-            \apps\utils\strategy\StrategyUtils::iZadd($iJourney, $aNotUsedSpot[0]);
+            $aRecommandSpot = $this->aGenSpot($iJourney);
 
             \apps\libs\BuildReturn::aBuildReturn($aRecommandSpot);
         } catch (Exception $e) {
@@ -384,6 +404,11 @@ class Journey extends \apps\controllers\BaseController
             }
 
             $ret = \apps\models\journey\Journey::iSetMemberFull($iJourneyId);
+
+            // 成局，则绑定策略
+            if ($ret) {
+
+            }
 
             \apps\libs\BuildReturn::aBuildReturn($ret);
         } catch (\Exception $e) {
