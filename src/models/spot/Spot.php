@@ -114,7 +114,7 @@ class Spot extends \Illuminate\Database\Eloquent\Model
             $spot['pic'] = json_decode($spot['pic'], true);
             $spot['time'] = json_decode($spot['time'], true);
 
-            $aRet[] = $aRet;
+            $aRet[] = $spot->toArray();
         }
 
         return $aRet;
