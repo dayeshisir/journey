@@ -48,7 +48,7 @@ class Constant
      */
     const INTERVAL_TIME_DAY  = 3600 * 24;
     const INTERVAL_WAIT_JOIN = 3 * self::INTERVAL_TIME_DAY;
-    const INTERVAL_WAIT_VOTE = 3 * self::INTERVAL_TIME_DAY;
+    const INTERVAL_WAIT_VOTE = self::INTERVAL_TIME_DAY;
 
     /**
      * 各种状态
@@ -85,4 +85,10 @@ class Constant
     const USER_STATUS_INIT    = 0;
     const USER_STATUS_JOIN    = 1;
     const USER_STATUS_VOTED   = 2;
+
+    /**
+     *
+     */
+    const VOTE_STATUS_OK      = 1;
+    const VOTE_STATUS_NO      = 2;
 }
