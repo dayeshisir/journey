@@ -82,9 +82,9 @@ class Constant
     /**
      * 用户状态流转
      */
-    const USER_STATUS_INIT    = 0;
-    const USER_STATUS_JOIN    = 1;
-    const USER_STATUS_VOTED   = 2;
+    const USER_STATUS_INIT    = 1;
+    const USER_STATUS_JOIN    = 2;
+    const USER_STATUS_VOTED   = 3;
 
     /**
      * 投票状态
