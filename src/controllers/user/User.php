@@ -74,7 +74,7 @@ class User extends \apps\controllers\BaseController
         }
 
         $aParam = [
-            'openid' => $aRet['openid'],
+            'uid'       => $aRet['openid'],
             'nick_name' => $aUserInfo['nickName'],
             'portrait'  => $aUserInfo['avatarUrl'],
             'gender'    => $aUserInfo['gender'],
