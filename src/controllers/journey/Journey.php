@@ -180,6 +180,9 @@ class Journey extends \apps\controllers\BaseController
 
         $aRecommandSpot = $aCandidateMap[$aNotUsedSpot[0]];
 
+        // 绑定到数据库
+        \apps\models\journey\Journey::iUpdateSpot($journey, $aRecommandSpot['id']);
+
         // 更新到redis缓存
         \apps\utils\strategy\StrategyUtils::iAdd($journey, $aRecommandSpot['id']);
 
