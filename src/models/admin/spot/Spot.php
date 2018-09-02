@@ -32,7 +32,7 @@ class Spot extends \Illuminate\Database\Eloquent\Model
     // public $timestamps  = false;
     protected $guard    = array('id',);
     protected $fillable = array('w_id', 'nick_name', 'pic', 'desc', 'mddid', 'mdd_name', 'label', 'min_num', 'max_num',
-        'min_days', 'max_days', 'time', 'relation', 'min_budget', 'max_budget', 'min_sbudget', 'max_sbudget', 'priority', 'spread');
+        'min_days', 'max_days', 'time', 'relation', 'min_budget', 'max_budget', 'min_sbudget', 'max_sbudget','budget', 'priority', 'spread');
     protected $hidden   = array();
 
     public function aGetSpotsByCondiction($aCondition)

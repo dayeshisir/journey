@@ -71,35 +71,40 @@ class Strategy
      */
     protected static function filterTime($aSpots, $aJouney, $aIntention)
     {
-        // 首先，计算出队员选的时间的交集
-        $ret = [];
-        $oWholePeriod = new Period($aJouney['start_time'], $aJouney['end_time']);
-        try {
-            foreach ($aIntention as $intention) {
-                foreach ($intention as $time) {
-                    $oCurPeriod = new Period($time['start_time'], $time['end_time']);
+        $aPeriod = [];
+        foreach ($aIntention as $intention) {
+            $aPeriod[$intention['uid']] = $intention['free_time'];
+        }
+        $aPeriod[$aJouney['id']] = [['start_time' => $aJouney['start_time'], 'end_time' => $aJouney['end_time']]];
 
-                    $oWholePeriod = $oWholePeriod->intersect($oCurPeriod);
+        $aValidInterval = \apps\utils\common\Time::aFindIntersectTime($aPeriod);
 
-                }
-            }
-
-            foreach ($aSpots as $spot) {
-                foreach ($spot['time'] as $time) {
-                    $oCurPeriod = new Period($time['start_time'], $time['end_time']);
-
-                    if ($oWholePeriod->intersect($oCurPeriod)) {
-                        array_push($ret, $spot);
+        $aRet = [];
+        foreach ($aSpots as $spot) {
+            $aTimes = $spot['time'];
+            $bFit   = false;
+            foreach ($aTimes as $time) {
+                $iCurStart = strtotime($time['start_time']);
+                $iCurEnd   = strtotime($time['end_time']);
+                
+                foreach ($aValidInterval as $interval) {
+                    $iValidStartTime = strtotime($interval['start_time']);
+                    $iValidEndTime   = strtotime($interval['end_time']);
+                    
+                    if ($iValidStartTime <= $iCurStart && $iValidEndTime >= $iCurEnd) {
+                        $bFit = true;
                         break;
                     }
                 }
-            }
-        } catch (Exception $e) {
 
-            return [];
+                if ($bFit) {
+                    $aRet[] = $spot;
+                    break;
+                }
+            }
         }
 
-        return $ret;
+        return $aRet;
     }
 
     /**
@@ -171,5 +176,24 @@ class Strategy
     protected static function bSmaller($op1, $op2)
     {
         return abs($op1 - $op2) < self::INFINITE_NUM;
+    }
+
+    public function aAddTest()
+    {
+        $iJourneyId = intval(\apps\libs\Request::mGetParam('journey_id', 0));
+        $iSpotId    = intval(\apps\libs\Request::mGetParam('spot_id', 0));
+
+        $iRet = \apps\utils\strategy\StrategyUtils::iZadd($iJourneyId, $iSpotId);
+
+        \apps\libs\BuildReturn::aBuildReturn(['ret' => $iRet]);
+    }
+
+    public function aGetTest()
+    {
+        $iJourneyId = intval(\apps\libs\Request::mGetParam('journey_id', 0));
+
+        $aRet = \apps\utils\strategy\StrategyUtils::aGetSpot($iJourneyId);
+
+        \apps\libs\BuildReturn::aBuildReturn($aRet);
     }
 }

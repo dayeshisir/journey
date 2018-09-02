@@ -10,6 +10,7 @@ namespace apps\controllers\journey;
 
 use apps\libs\Exception;
 use apps\libs\Log;
+use apps\utils\strategy\StrategyUtils;
 
 class Journey extends \apps\controllers\BaseController
 {
@@ -150,7 +151,11 @@ class Journey extends \apps\controllers\BaseController
         }
     }
 
-    public function aGetVoteJourney()
+    /**
+     * 获取推荐给用户的spot
+     *
+     */
+    public function aGetSpot()
     {
         $iJourney = intval(\apps\libs\Request::mGetParam('journey_id', 0));
 
@@ -160,10 +165,117 @@ class Journey extends \apps\controllers\BaseController
             $aCandidateMap = \apps\utils\common\Util::array2map($aCandidateSpots, 'spot_id');
             $aSpotIds = array_column($aCandidateSpots, 'spot_id');
 
-            $aUsed = \apps\redis\MyRedis::aScan($iJourney);
+            $aUsedSpot = \apps\utils\strategy\StrategyUtils::aGetSpot($iJourney);
 
-            $aNotUsed = array_diff($aSpotIds, $aUsed);
+            $aNotUsedSpot = array_diff($aSpotIds, $aUsedSpot);
 
+            $aRecommandSpot = [];
+            if (!empty($aNotUsedSpot)) {
+                $aRecommandSpot = $aCandidateMap[$aNotUsedSpot[0]];
+            }
+
+            // 更新到redis缓存
+            \apps\utils\strategy\StrategyUtils::iZadd($iJourney, $aNotUsedSpot[0]);
+
+            \apps\libs\BuildReturn::aBuildReturn($aRecommandSpot);
+        } catch (Exception $e) {
+            $errno  = $e->getCode();
+            $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
+            Log::vWarning('Journey::aGetVoteJourney fail', ['param' => ['journey_id' => $iJourney,],
+                'errno' => $errno, 'msg' => $errmsg]);
+
+            \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
+        }
+    }
+
+    /**
+     * 投票页面展示接口
+     */
+    public function aGetVoteJourney()
+    {
+        $iJourney = intval(\apps\libs\Request::mGetParam('journey_id', 0));
+        try {
+            // 局信息
+            $aJourney = \apps\models\journey\Journey::aGetDetail($iJourney);
+            $aSpot    = \apps\models\spot\Spot::aGetDetail($aJourney['spot_id']);
+            $aVote    = \apps\models\vote\Vote::aJourneyVote($iJourney, $aJourney['spot_id']);
+            $aMember  = \apps\models\member\Member::aGetJourneyGroup(['journey_id' => $iJourney]);
+            $aMemberMap = \apps\utils\common\Util::array2map($aMember, 'uid');
+            $aVoteMap = [];
+            foreach ($aVote as $vote) {
+                $iVote = $vote['vote'];
+                $sUid  = $vote['uid'];
+
+                $aVoteMap[$iVote][] = [
+                    'nick_name' => $aMemberMap[$sUid]['nick_name'],
+                    'portrait'  => $aMemberMap[$sUid]['portrait'],
+                ];
+            }
+
+            $aRet = [
+                'spot' => $aSpot,
+                'vote_time' => $aJourney['vote_time'],
+                'duration'  => \apps\common\Constant::INTERVAL_WAIT_VOTE,
+                'vote' => $aVoteMap,
+            ];
+            \apps\libs\BuildReturn::aBuildReturn($aRet);
+        }catch (Exception $e) {
+            $errno  = $e->getCode();
+            $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
+            Log::vWarning('Journey::aGetVoteJourney fail', ['param' => ['journey_id' => $iJourney,],
+                'errno' => $errno, 'msg' => $errmsg]);
+
+            \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
+        }
+    }
+
+    public function aGetSuccJourney()
+    {
+        $iJourney = intval(\apps\libs\Request::mGetParam('journey_id', 0));
+        try {
+            $aJourney = \apps\models\journey\Journey::aGetDetail($iJourney);
+            $aSpot    = \apps\models\spot\Spot::aGetDetail($aJourney['spot_id']);
+            $aMember = \apps\models\member\Member::aGetJourneyGroup(['journey_id' => $iJourney]);
+            $iAnyNum      = 0;
+            $iChinaNum    = 0;
+            $iInternalNum = 0;
+            $aFreeTime    = [];
+            $aUids        = [];
+            foreach ($aMember as $member) {
+                if (\apps\common\Constant::INTENTION_TYPE_ANY === intval($member['intention'])) {
+                    $iAnyNum++;
+                }
+                if (\apps\common\Constant::INTENTION_TYPE_CHINA === intval($member['intention'])) {
+                    $iChinaNum++;
+                }
+                if (\apps\common\Constant::INTENTION_TYPE_INTERNATION === intval($member['intention'])) {
+                    $iInternalNum++;
+                }
+
+                $aCurFreeTime = json_decode($member['free_time'], true);
+                $aFreeTime[$member['uid']] = $aCurFreeTime;
+
+                $aUids[] = $member['uid'];
+            }
+
+            $aFreeTime[$aJourney['id']] = [['start_time' => $aJourney['start_time'], 'end_time' => $aJourney['end_time']]];
+
+            $aShowTime = \apps\utils\common\Time::aFindInValidTime($aFreeTime);
+
+            // $iDays = \apps\utils\common\Time::iFindNearDay($aSpot['time']);
+
+            $aRet = [
+                'days'        => 10,
+                'spot'        => $aSpot,
+                'intention'   => [
+                    'any'         => $iAnyNum,
+                    'china'       => $iChinaNum,
+                    'internation' => $iInternalNum,
+                ],
+                'busy_time'    => $aShowTime,
+            ];
+
+            \apps\libs\BuildReturn::aBuildReturn($aRet);
         } catch (Exception $e) {
             $errno  = $e->getCode();
             $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
@@ -223,7 +335,7 @@ class Journey extends \apps\controllers\BaseController
             $aUserInfo = \apps\models\user\User::aGetUserByIds($aUids);
 
             $aRet = [
-                'create_time' => $aJourney['created_at'],
+                'create_time' => strtotime($aJourney['created_at']),
                 'duration'    => \apps\common\Constant::INTERVAL_WAIT_JOIN,
                 'target_num'  => $aJourney['people_num'],
                 'user'        => $aUserInfo,
@@ -253,10 +365,10 @@ class Journey extends \apps\controllers\BaseController
     public function iSetMemberFull()
     {
         $iJourneyId = intval(\apps\libs\Request::mGetParam('journey_id', 0));
-        $iUid       = intval(\apps\libs\Request::mGetParam('uid', ''));
+        $sUid       = \apps\libs\Request::mGetParam('uid', '');
 
         try {
-            if ($iJourneyId <= 0 || $iUid <= 0) {
+            if ($iJourneyId <= 0 || empty($sUid)) {
                 throw new Exception('', Exception::ERR_PARAM_ERROR);
             }
 
@@ -267,7 +379,7 @@ class Journey extends \apps\controllers\BaseController
             }
             $aJourney = $aJourney[0];
 
-            if ($iUid !== intval($aJourney['uid'])) {
+            if ($sUid !== $aJourney['uid']) {
                 throw new Exception('', Exception::ERR_PERMISSION_ERROR);
             }
 

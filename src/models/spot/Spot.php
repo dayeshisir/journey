@@ -7,6 +7,7 @@
  */
 
 namespace apps\models\spot;
+use apps\libs\Exception;
 
 
 /**
@@ -76,6 +77,28 @@ class Spot extends \Illuminate\Database\Eloquent\Model
 
             $aRet[] = $spot;
         }
+
+        return $aRet;
+    }
+
+    /**
+     * 获取一个景点详情
+     *
+     * @param $id
+     * @return array
+     * @throws Exception
+     */
+    public static function aGetDetail($id)
+    {
+        $oSpot = self::query()->find($id);
+        if (null === $oSpot) {
+
+            throw new Exception(Exception::ERR_PARAM_ERROR);
+        }
+
+        $aRet = $oSpot->toArray();
+        $aRet['pic']  = json_decode($aRet['pic'], true);
+        $aRet['time'] = json_decode($aRet['time'], true);
 
         return $aRet;
     }

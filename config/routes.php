@@ -44,9 +44,9 @@ Macaw::post('/push/add', 'apps\controllers\push\Push@aAddPush');
 
 Macaw::post('/push/consume', 'apps\controllers\push\Push@aConsumePush');
 
-Macaw::get('/strategy/add', 'apps\controllers\strategy\Auxiliary@iAdd');
+Macaw::get('/strategy/addTest', 'apps\controllers\strategy\Strategy@aAddTest');
 
-Macaw::get('/strategy/get', 'apps\controllers\strategy\Auxiliary@aGet');
+Macaw::get('/strategy/getTest', 'apps\controllers\strategy\Strategy@aGetTest');
 
 Macaw::get('/journey/check', function() {
     echo json_encode([

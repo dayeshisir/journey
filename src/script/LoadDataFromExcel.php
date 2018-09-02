@@ -62,6 +62,7 @@ class LoadData
             return [];
         }
 
+        $iIndex = 1;
         foreach ($aSheetData as $sheet) {
             $aNew = self::transField($sheet);
 
@@ -69,8 +70,8 @@ class LoadData
                 continue;
             }
 
-            $aRecommendTime   = self::aGetRecommendTime($aNew['time']);
-            // $aRecommendBudget = self::aGetRecommendBudget($aNew['budget']);
+            $aRecommendTime   = self::aGetRecommendTime($aNew['time'], $sheet);
+            $aRecommendBudget = self::aGetRecommendBudget($aNew['budget']);
             $iRelation        = self::iGetRecommendRelation($aNew['relation']);
 
             $aData[] = [
@@ -86,9 +87,8 @@ class LoadData
                 'min_days'           => $aNew['min_recommend_duration'],
                 'max_days'           => $aNew['max_recommend_duration'],
                 'relation'           => $iRelation,
-                'budget'             => $aNew['budget'],
-//                'min_budget'         => $aRecommendBudget['min_budget'],
-//                'max_budget'         => $aRecommendBudget['max_budget'],
+                'min_budget'         => $aRecommendBudget['min_budget'],
+                'max_budget'         => $aRecommendBudget['max_budget'],
             ];
         }
 
@@ -123,7 +123,7 @@ class LoadData
     protected static function aGetRecommendBudget($sBudget)
     {
         if (false === strpos($sBudget, ',')) {
-            return ['min_budget' => 0, 'max_budget' => 0];
+            return ['min_budget' => 0, 'max_budget' => intval($sBudget)];
         }
 
         list($min_budget, $max_budget) = explode(',', $sBudget);
@@ -159,12 +159,15 @@ class LoadData
      * @param $sTime
      * @return array
      */
-    protected static function aGetRecommendTime($sTime)
+    protected static function aGetRecommendTime($sTime, $sheet)
     {
         $aRet   = [];
         $aTimes = explode(';', $sTime);
         foreach ($aTimes as $time) {
             list($start_time, $end_time) = explode(',', $time);
+            if (empty($end_time)) {
+                echo json_encode($sheet) . "\n";
+            }
             $aRet[] = ['start_time' => $start_time, 'end_time' => $end_time];
         }
 

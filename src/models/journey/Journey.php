@@ -82,6 +82,21 @@ class Journey extends \Illuminate\Database\Eloquent\Model
     }
 
     /**
+     * 更新旅局的景点
+     *
+     * @param $journey
+     * @param $spot
+     * @return bool
+     */
+    public static function iUpdateSpot($journey, $spot)
+    {
+        $oJourney = self::query()->find($journey);
+        $oJourney->spot_id = $spot;
+
+        return $oJourney->save();
+    }
+
+    /**
      *  初始状态 => 等待成员加入 状态
      *
      * @param $journeyId
