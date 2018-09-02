@@ -48,16 +48,28 @@ class Vote extends BaseController
 
     public function aVoteList()
     {
-        $iJourneyId = \apps\libs\Request::mGetParam('journey_id', 0);
-        $iSpotId    = \apps\libs\Request::mGetParam('spot_id', 0);
-        $sUid       = \apps\libs\Request::mGetParam('uid', '');
+        $iJourneyId = intval(\apps\libs\Request::mGetParam('journey_id', 0));
         try {
-            $aVoteList = \apps\models\vote\Vote::aJourneyVote($iJourneyId, $iSpotId);
-            $aVoteMap  = \apps\utils\common\Util::array2map($aVoteList, 'uid');
-            $aMember   = \apps\models\member\Member::aGetJourneyGroup($iJourneyId);
+            $aJourney   = \apps\models\journey\Journey::aGetDetail($iJourneyId);
+            $iSpotId    = $aJourney['spot_id'];
+            $aVoteList  = \apps\models\vote\Vote::aJourneyVote($iJourneyId, $iSpotId);
+            $aUids      = array_column($aVoteList, 'uid');
+            $aMember    = \apps\models\user\User::aGetUserByIds($aUids);
+            $aMemberMap = \apps\utils\common\Util::array2map($aMember, 'uid');
+
+            $aRet = [];
+            foreach ($aVoteList as $vote) {
+                $iVote = $vote['vote'];
+                $aRet[$iVote][] = $aMemberMap[$vote['uid']];
+            }
+
+            \apps\libs\BuildReturn::aBuildReturn($aRet);
 
         } catch (Exception $e) {
-
+            $errno  = $e->getCode();
+            $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
+            \apps\libs\Log::vWarning('Member::add fail', ['journey_id' => $iJourneyId, 'errno' => $errno, 'msg' => $errmsg]);
+            \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
         }
     }
 }

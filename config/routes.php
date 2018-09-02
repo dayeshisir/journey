@@ -38,6 +38,8 @@ Macaw::get('/journey/getVoteJourney', 'apps\controllers\journey\Journey@aGetVote
 
 Macaw::post('/spot/vote', 'apps\controllers\vote\Vote@aVote');
 
+Macaw::get('/spot/voteList', 'apps\controllers\vote\Vote@aVoteList');
+
 Macaw::get('/test/demo', 'apps\controllers\test\Test@aDemo');
 
 Macaw::get('/test/echo', 'apps\controllers\test\Test@aEcho');
