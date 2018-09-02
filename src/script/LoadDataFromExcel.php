@@ -76,10 +76,10 @@ class LoadData
 
             $aData[] = [
                 'w_id'               => $aNew['w_id'],
-                'nick_name'          => $aNew['nick_name'],
-                'pic'                => json_encode([$aNew['pic_url']]),
-                'desc'               => $aNew['desc'],
-                'mdd_name'           => $aNew['mdd_name'],
+                'nick_name'          => trim($aNew['nick_name']),
+                'pic'                => json_encode([trim($aNew['pic_url'])]),
+                'desc'               => trim($aNew['desc']),
+                'mdd_name'           => trim($aNew['mdd_name']),
                 'label'              => $aNew['label'],
                 'min_num'            => $aNew['min_recommend_num'],
                 'max_num'            => $aNew['max_recommend_num'],
