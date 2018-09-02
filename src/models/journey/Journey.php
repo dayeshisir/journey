@@ -94,10 +94,9 @@ class Journey extends \Illuminate\Database\Eloquent\Model
     public static function iUpdateSpot($journey, $spot, $time)
     {
         $oJourney = self::query()->find($journey);
-        $oJourney->spot_id     = $spot;
-        $oJourney->rstart_time = '0000-00-00';
-        $oJourney->rend_time   = '0000-00-00';
+        $oJourney->spot_id        = $spot;
         $oJourney->recommend_time = json_encode($time);
+        $oJourney->vote_time      = date('Y-m-d H:i:s');
 
         return $oJourney->save();
     }

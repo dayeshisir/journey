@@ -8,43 +8,41 @@
 
 use NoahBuscher\Macaw\Macaw;
 
-Macaw::post('/admin/add', 'apps\controllers\admin\spot\SpotController@bAdd');
+// 用户获取openid
+Macaw::get('/user/openid', 'apps\controllers\user\User@aGetOpenId');
 
-Macaw::get('/admin/detail', 'SpotController@aGetById');
-
-Macaw::get('/admin/list', 'SpotController@aGetList');
-
-Macaw::get('/admin/update', 'SpotController@bUpdate');
-
+// 发起旅局
 Macaw::post('/journey/add', 'apps\controllers\journey\Journey@bAdd');
 
+// 报名，也即是入局
 Macaw::post('/member/add', 'apps\controllers\member\Member@bAdd');
 
-Macaw::post('/member/saveForumId', 'apps\controllers\member\Member@aSaveForumId');
-
-Macaw::get('/member/status', 'apps\controllers\member\Member@aUserStatus');
-
-Macaw::get('/journey/getJourneyList', 'apps\controllers\journey\Journey@aJourneyList');
-
+// 开始收集用户意向
 Macaw::get('/journey/prepareJoin', 'apps\controllers\journey\Journey@aPrepareJoin');
 
+// 我的旅局
+Macaw::get('/journey/getJourneyList', 'apps\controllers\journey\Journey@aJourneyList');
+
+// 局的详情页 -- 组局
 Macaw::get('/journey/getJoinJourney', 'apps\controllers\journey\Journey@aGetJoinJourney');
 
+// 提前组局成功
 Macaw::post('/journey/setMemberFull', 'apps\controllers\journey\Journey@iSetMemberFull');
 
+// 策略的换一换
 Macaw::get('/journey/getSpot', 'apps\controllers\journey\Journey@aGetSpot');
 
+// 确认成局
+Macaw::post('/journey/setJourneySucc', 'apps\controllers\journey\Journey@aSetJourneySucc');
+
+// 局的详情页 -- 投票
 Macaw::get('/journey/getVoteJourney', 'apps\controllers\journey\Journey@aGetVoteJourney');
 
+// 投票
 Macaw::post('/spot/vote', 'apps\controllers\vote\Vote@aVote');
 
+// 投票列表
 Macaw::get('/spot/voteList', 'apps\controllers\vote\Vote@aVoteList');
-
-Macaw::get('/test/demo', 'apps\controllers\test\Test@aDemo');
-
-Macaw::get('/test/echo', 'apps\controllers\test\Test@aEcho');
-
-Macaw::get('/user/openid', 'apps\controllers\user\User@aGetOpenId');
 
 Macaw::get('/spot/list', 'apps\controllers\spot\Spot@aGetList');
 
@@ -55,6 +53,12 @@ Macaw::post('/push/consume', 'apps\controllers\push\Push@aConsumePush');
 Macaw::get('/strategy/addTest', 'apps\controllers\strategy\Strategy@aAddTest');
 
 Macaw::get('/strategy/getTest', 'apps\controllers\strategy\Strategy@aGetTest');
+
+// 保存forum_id，以供发送微信通知
+Macaw::post('/member/saveForumId', 'apps\controllers\member\Member@aSaveForumId');
+
+// 旅局的状态，包括局的状态、用户的状态、用户的身份，队长还是队员
+Macaw::get('/member/status', 'apps\controllers\member\Member@aUserStatus');
 
 Macaw::get('/journey/check', function() {
     echo json_encode([

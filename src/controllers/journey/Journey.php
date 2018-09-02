@@ -434,7 +434,45 @@ class Journey extends \apps\controllers\BaseController
         } catch (\Exception $e) {
             $errno  = $e->getCode();
             $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
-            Log::vWarning('Member::add fail', ['param' => ['journey_id' => $iJourneyId, 'uid' => $iUid],
+            Log::vWarning('Member::add fail', ['param' => ['journey_id' => $iJourneyId, 'uid' => $sUid],
+                'errno' => $errno, 'msg' => $errmsg]);
+
+            \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
+        }
+    }
+
+    /**
+     * 提前成局
+     *
+     */
+    public function aSetJourneySucc()
+    {
+        $iJourneyId = intval(\apps\libs\Request::mGetParam('journey_id', 0));
+        $sUid       = \apps\libs\Request::mGetParam('uid', '');
+
+        try {
+            if ($iJourneyId <= 0 || empty($sUid)) {
+                throw new Exception('', Exception::ERR_PARAM_ERROR);
+            }
+
+            // 拉取局的信息
+            $aJourney = \apps\models\journey\Journey::aGetJourneyByIds([$iJourneyId]);
+            if (empty($aJourney)) {
+                throw new Exception('', Exception::ERR_PARAM_ERROR);
+            }
+            $aJourney = $aJourney[0];
+
+            if ($sUid !== $aJourney['uid']) {
+                throw new Exception('', Exception::ERR_PERMISSION_ERROR);
+            }
+
+            $ret = \apps\models\journey\Journey::iSucc($iJourneyId);
+
+            \apps\libs\BuildReturn::aBuildReturn($ret);
+        } catch (\Exception $e) {
+            $errno  = $e->getCode();
+            $errmsg = $e instanceof Exception ? $e->sGetUserErrmsg($e->getCode()) : $e->getMessage();
+            Log::vWarning('Member::add fail', ['param' => ['journey_id' => $iJourneyId, 'uid' => $sUid],
                 'errno' => $errno, 'msg' => $errmsg]);
 
             \apps\libs\BuildReturn::aBuildReturn([], $errno, $errmsg);
