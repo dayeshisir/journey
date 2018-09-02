@@ -58,13 +58,14 @@ class Vote extends BaseController
             $aMemberMap = \apps\utils\common\Util::array2map($aMember, 'uid');
 
             $aRet = [
-                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NONE] => 0,
-                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NO]   => 0,
-                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_OK]   => 0,
+                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NONE] => [],
+                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NO]   => [],
+                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_OK]   => [],
             ];
             foreach ($aVoteList as $vote) {
                 $iVote = $vote['vote'];
-                array_push($aRet[$iVote], $aMemberMap[$vote['uid']]);
+                $index = \apps\common\Config::$aVoteIndex[$iVote];
+                array_push($aRet[$index], $aMemberMap[$vote['uid']]);
             }
 
             \apps\libs\BuildReturn::aBuildReturn($aRet);

@@ -227,9 +227,9 @@ class Journey extends \apps\controllers\BaseController
             $aMember  = \apps\models\user\User::aGetUserByIds($aUid);
             $aMemberMap = \apps\utils\common\Util::array2map($aMember, 'uid');
             $aVoteMap = [
-                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NONE] => 0,
-                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_OK]   => 0,
-                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NO]   => 0,
+                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NONE] => [],
+                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_OK]   => [],
+                \apps\common\Config::$aVoteIndex[\apps\common\Constant::VOTE_STATUS_NO]   => [],
             ];
             foreach ($aVote as $vote) {
                 $iVote = $vote['vote'];
@@ -239,7 +239,8 @@ class Journey extends \apps\controllers\BaseController
                     'nick_name' => $aMemberMap[$sUid]['nick_name'],
                     'portrait'  => $aMemberMap[$sUid]['portrait'],
                 ];
-                array_push($aVoteMap[$iVote], $aCurUser);
+                $index = \apps\common\Config::$aVoteIndex[$iVote];
+                array_push($aVoteMap[$index], $aCurUser);
             }
 
             $aRet = [
