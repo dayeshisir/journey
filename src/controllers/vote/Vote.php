@@ -21,7 +21,7 @@ class Vote extends BaseController
     {
         $aParam = [
             'journey_id' => intval(\apps\libs\Request::mGetParam('journey_id', 0)),
-            'uid'        => intval(\apps\libs\Request::mGetParam('uid', '')),
+            'uid'        => \apps\libs\Request::mGetParam('uid', ''),
             'vote'       => intval(\apps\libs\Request::mGetParam('vote', 0)),
         ];
         try {
