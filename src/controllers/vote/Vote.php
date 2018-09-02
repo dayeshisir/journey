@@ -20,12 +20,15 @@ class Vote extends BaseController
     public function aVote()
     {
         $aParam = [
-            'journey_id' => \apps\libs\Request::mGetParam('journey_id', 0),
-            'spot_id'    => \apps\libs\Request::mGetParam('spot_id', 0),
-            'uid'        => \apps\libs\Request::mGetParam('uid', ''),
-            'vote'       => \apps\libs\Request::mGetParam('vote', 0),
+            'journey_id' => intval(\apps\libs\Request::mGetParam('journey_id', 0)),
+            'uid'        => intval(\apps\libs\Request::mGetParam('uid', '')),
+            'vote'       => intval(\apps\libs\Request::mGetParam('vote', 0)),
         ];
         try {
+            $aJourney = \apps\models\journey\Journey::aGetDetail($aParam['journey_id']);
+
+            $aParam['spot_id'] = $aJourney['spot_id'];
+
             $iNow  = time();
             $oVote = \apps\models\vote\Vote::oVote($aParam);
             $iVoteTime = strtotime($oVote->create_at);

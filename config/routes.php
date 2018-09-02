@@ -36,6 +36,8 @@ Macaw::get('/journey/getSpot', 'apps\controllers\journey\Journey@aGetSpot');
 
 Macaw::get('/journey/getVoteJourney', 'apps\controllers\journey\Journey@aGetVoteJourney');
 
+Macaw::post('/spot/vote', 'apps\controllers\vote\Vote@aVote');
+
 Macaw::get('/test/demo', 'apps\controllers\test\Test@aDemo');
 
 Macaw::get('/test/echo', 'apps\controllers\test\Test@aEcho');
