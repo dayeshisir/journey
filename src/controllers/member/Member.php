@@ -136,6 +136,14 @@ class Member extends \apps\controllers\BaseController
         $aRet['journey_status'] = $aJourney['status'];
         $aRet['is_leader'] = strval($aJourney['uid']) == strval($uid) ? 1 : 0;
 
+        $sLeaderUid = $aJourney['uid'];
+        $aLeaderInfo = \apps\models\user\User::aGetUserByIds([$sLeaderUid]);
+        if (!empty($aLeaderInfo)) {
+
+            $aRet['leader_nickname'] = $aLeaderInfo[0]['nick_name'];
+            $aRet['leader_portrait'] = $aLeaderInfo[0]['portrait'];
+        }
+
         // 还没人开始加入，直接返回
         if ($aJourney['status'] < \apps\common\Constant::JOURNEY_STATUS_JOIN) {
 
