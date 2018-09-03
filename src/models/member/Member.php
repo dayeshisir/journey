@@ -26,7 +26,7 @@ class Member  extends \Illuminate\Database\Eloquent\Model
 
     public static function bAdd($aParam)
     {
-        $aParam['busy_time'] = json_encode($aParam['busy_time']);
+        $aParam['busy_time'] = $aParam['busy_time'];
         $aParam['free_time'] = json_encode($aParam['free_time']);
 
         $oQuery = self::query();
@@ -63,7 +63,7 @@ class Member  extends \Illuminate\Database\Eloquent\Model
 
         $aRet = $aMember[0];
         if (!empty($aRet)) {
-            $aRet['busy_time'] = json_decode($aRet['busy_time'], true);
+            $aRet['busy_time'] = $aRet['busy_time'], true;
             $aRet['free_time'] = json_decode($aRet['free_time'], true);
         }
 
