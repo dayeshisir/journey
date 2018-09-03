@@ -143,9 +143,11 @@ class Strategy
                 $iCurEnd   = strtotime($sYear . '-' . $time['end_time']);
 
                 if ($iCurStart <= $iJourneyStart && $iCurEnd >= $iJourneyEnd) {
+                    $iRecommendStart = date('Y-m-d', $iJourneyStart);
+                    $iRecommendEnd   = date('Y-m-d', $iJourneyStart + $spot['min_days'] * \apps\common\Constant::INTERVAL_TIME_DAY);
                     $aRet[$spot['id']] = [
                         'spot' => $spot,
-                        'time' => ['start_time' => date('Y-m-d', $iCurStart), 'end_time' => date('Y-m-d', $iCurEnd)],
+                        'time' => ['start_time' => $iRecommendStart, 'end_time' => $iRecommendEnd],
                         'relation' => \apps\utils\journey\JourneyUtils::iGetRelation($spot['relation']),
                     ];
                     break;
