@@ -38,7 +38,7 @@ class Time
         $iTargetNum = count($aPeriod);
         $aRet       = [];
         foreach ($aStats as $date => $num) {
-            if ($num < $iTargetNum) {
+            if ($num <= $iTargetNum) {
                 $aRet[$date] = $iTargetNum - $num;
             }
         }
@@ -79,8 +79,16 @@ class Time
             }
         }
 
+        if (!empty($sStart)) {
+            $aRes[] = array(
+                'start_time' => $sStart,
+                'end_time'   => $sEnd,
+                'num'        => $iCurNum,
+            );
+        }
 
-        return $aRet;
+
+        return $aRes;
     }
 
     public static function aGetContinutityValidDate($aStats, $aPeriod)
