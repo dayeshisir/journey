@@ -167,6 +167,8 @@ class Journey extends \apps\controllers\BaseController
 
         $aUsedSpot = \apps\utils\strategy\StrategyUtils::aGetSpot($journey);
 
+        $aUsedSpot = array_unique($aUsedSpot);
+
         $aNotUsedSpot = array_diff($aSpotIds, $aUsedSpot);
 
         // 如果随机用完了，重新来过
