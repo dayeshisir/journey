@@ -69,7 +69,7 @@ class Strategy
 
         Log::vNotice('[根据意向、人数和预算筛选的策略如下：]', []);
 
-        \apps\utils\strategy\ReportLog::vChooseSpot($aSpots);
+        // \apps\utils\strategy\ReportLog::vChooseSpot($aSpots);
 
         Log::vNotice("意向、人数、预算筛选后： ", ["数量为". count($aSpots)]);
 
@@ -78,14 +78,14 @@ class Strategy
 
         Log::vNotice('剔除不合适的关系后，筛选的策略如下', []);
 
-        \apps\utils\strategy\ReportLog::vChooseSpot($aSpots);
+        // \apps\utils\strategy\ReportLog::vChooseSpot($aSpots);
         Log::vNotice("剔除关系后： ", ["数量为". count($aSpots)]);
 
         // 过滤时间
         $aSpots = self::filterTime($aSpots, $aJourney, $aJurneyIntention);
 
         Log::vNotice('提出不合适的时间区间后，筛选的策略如下', []);
-        \apps\utils\strategy\ReportLog::vFinalSpot($aSpots);
+        // \apps\utils\strategy\ReportLog::vFinalSpot($aSpots);
         Log::vNotice("剔除不合适时间后： ", ["数量为". count($aSpots)]);
 
         $aSpots = self::aSortByRelation($aSpots);
