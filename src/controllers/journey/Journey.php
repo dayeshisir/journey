@@ -177,9 +177,10 @@ class Journey extends \apps\controllers\BaseController
 
         // 数组随机一下
         // shuffle($aNotUsedSpot);
+        $iSelectedSpot = current($aNotUsedSpot);
 
-        $aRecommandSpot = $aCandidateSpots[$aNotUsedSpot[0]]['spot'];
-        $aRecommandTime = $aCandidateSpots[$aNotUsedSpot[0]]['time'];
+        $aRecommandSpot = $aCandidateSpots[$iSelectedSpot]['spot'];
+        $aRecommandTime = $aCandidateSpots[$iSelectedSpot]['time'];
 
         // 绑定到数据库
         \apps\models\journey\Journey::iUpdateSpot($journey, $aRecommandSpot['id'], $aRecommandTime);
