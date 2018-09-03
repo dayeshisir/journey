@@ -84,7 +84,12 @@ class Member  extends \Illuminate\Database\Eloquent\Model
             return [];
         }
 
-        return $aMember->toArray();
+        $aMember = $aMember->toArray();
+        foreach ($aMember as $key => $value) {
+            $aMember[$key]['free_time'] = json_decode($value['free_time'], true);
+        }
+
+        return $aMember;
     }
 
     /**

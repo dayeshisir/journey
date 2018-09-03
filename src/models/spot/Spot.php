@@ -54,6 +54,14 @@ class Spot extends \Illuminate\Database\Eloquent\Model
         $oQuery->where('max_budget', '>=', $aCondtion['max_budget']);
 
         $aRet = $oQuery->get();
+        if (null === $aRet) {
+            return [];
+        }
+
+        $aRet = $aRet->toArray();
+        foreach ($aRet as $key => $item) {
+            $aRet[$key]['time'] = json_decode($item['time'], true);
+        }
 
         return $aRet;
     }

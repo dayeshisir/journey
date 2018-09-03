@@ -157,13 +157,14 @@ class Strategy
 
                     // 时间合适，即策略的适宜时间包含队员的适宜时间
                     if ($iCurStart <= $iValidStartTime && $iCurEnd >= $iValidEndTime) {
-                        $iValidDays = self::iGetDays($iValidStartTime, $iValidEndTime);
-                        // 天数合适，即队员选出的适宜天数满足景点推荐的适宜天数
-                        if ($iValidDays >= $spot['min_days'] && $iValidDays <= $spot['max_num']) {
-                            $bFit = true;
-
-                            $aFitTimeInterval[] = $interval;
-                        }
+                        $bFit = true;
+//                        $iValidDays = self::iGetDays($iValidStartTime, $iValidEndTime);
+//                        // 天数合适，即队员选出的适宜天数满足景点推荐的适宜天数
+//                        if ($iValidDays >= $spot['min_days'] && $iValidDays <= $spot['max_num']) {
+//                            $bFit = true;
+//
+//                            $aFitTimeInterval[] = $interval;
+//                        }
                     }
                 }
             }
