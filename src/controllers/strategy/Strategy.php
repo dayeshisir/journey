@@ -44,7 +44,7 @@ class Strategy
         $aJourney = current($aJourneyList);
 
         // 取出所有用户的意向
-        $aJurneyIntention = \apps\models\member\Member::aGetJourneyGroup($iJourneyId);
+        $aJurneyIntention = \apps\models\member\Member::aGetJourneyGroup(['journey_id' => $iJourneyId]);
 
         // 分析得到队员的出游意向
         $aCondition = [
@@ -173,26 +173,26 @@ class Strategy
             $aIntentionMap[$iCurIntention][] = $intention['uid'];
         }
 
-        $iChina       = count($aIntentionMap[\apps\common\Constant::INTENTION_TYPE_CHINA]);
-        $iInternation = count($aIntentionMap[\apps\common\Constant::INTENTION_TYPE_INTERNATION]);
-        $iAny         = count($aIntentionMap[\apps\common\Constant::INTENTION_TYPE_ANY]);
+        $iChina       = isset($aIntention[\apps\common\Constant::INTENTION_TYPE_CHINA]) ? count($aIntentionMap[\apps\common\Constant::INTENTION_TYPE_CHINA]) : 0;
+        $iInternation = isset($aIntentionMap[\apps\common\Constant::INTENTION_TYPE_INTERNATION]) ? count($aIntentionMap[\apps\common\Constant::INTENTION_TYPE_INTERNATION]) : 0;
+        $iAny         = isset($aIntentionMap[\apps\common\Constant::INTENTION_TYPE_ANY]) ? count($aIntentionMap[\apps\common\Constant::INTENTION_TYPE_ANY]) : 0;
 
-        $iTotalNum = $iChina + $iInternation + $iAny;
-        $fChinaRatio = sprintf("%.2f", $iChina/$iTotalNum);
+        $iTotalNum         = $iChina + $iInternation + $iAny;
+        $fChinaRatio       = sprintf("%.2f", $iChina/$iTotalNum);
         $fInternationRatio = sprintf("%.2f", $iInternation/$iTotalNum);
-        $iAny = 1 - $fChinaRatio - $fInternationRatio;
+        $iAnyRatio         = sprintf("%.2f", 1 - $fChinaRatio - $fInternationRatio);
 
         // rule 1 : 【国内】【国外】意向的人数比例都小于25%，则认为这个局没有目的地意向
-        if (self::bSmaller($fChinaRatio, self::INTENTION_BASE) && self::bSmaller($fInternationRatio, self::INTENTION_BASE)) {
+        if ($fChinaRatio < self::INTENTION_BASE  && fInternationRatio < self::INTENTION_BASE ) {
             return \apps\common\Constant::INTENTION_TYPE_ANY;
         }
 
         // rule 3 : 【国内】或【国外】任一意向的人数比例超过60%，则认为这个意向为局的意向
-        if (!self::bSmaller($fChinaRatio, self::INTENTION_WIN)) {
+        if (self::INTENTION_WIN < $fChinaRatio) {
             return \apps\common\Constant::INTENTION_TYPE_CHINA;
         }
 
-        if (!self::bSmaller($fInternationRatio, self::INTENTION_WIN)) {
+        if (self::INTENTION_WIN < $fInternationRatio) {
             return \apps\common\Constant::INTENTION_TYPE_INTERNATION;
         }
 
@@ -208,22 +208,11 @@ class Strategy
             $fMinRatio = $fChinaRatio;
         }
 
-        if (self::bSmaller($fMaxRatio, self::INTENTION_WIN) && !self::bSmaller($fMinRatio, self::INTENTION_BASE)
-            && !self::bSmaller($fMaxRatio - $fMinRatio, self::INTENTION_DIFF)) {
+        if ($fMaxRatio < self::INTENTION_WIN &&  self::INTENTION_BASE < $fMinRatio
+            && self::INTENTION_DIFF < $fMaxRatio - $fMinRatio ) {
             return $bChina ? \apps\common\Constant::INTENTION_TYPE_CHINA : \apps\common\Constant::INTENTION_TYPE_INTERNATION;
         }
 
         return \apps\common\Constant::INTENTION_TYPE_ANY;
-    }
-
-    /**
-     *  op1 小于 op2 返回 true
-     * @param $op1
-     * @param $op2
-     * @return bool
-     */
-    protected static function bSmaller($op1, $op2)
-    {
-        return abs($op1 - $op2) < self::INFINITE_NUM;
     }
 }
