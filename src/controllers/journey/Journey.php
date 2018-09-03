@@ -369,6 +369,7 @@ class Journey extends \apps\controllers\BaseController
                     'china'       => $iChinaNum,
                     'internation' => $iInternalNum,
                 ],
+                'member' => $aMember,
                 'busy_time'  => $aShowTime,
             ];
 

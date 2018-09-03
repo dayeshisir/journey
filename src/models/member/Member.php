@@ -63,7 +63,7 @@ class Member  extends \Illuminate\Database\Eloquent\Model
 
         $aRet = $aMember[0];
         if (!empty($aRet)) {
-            $aRet['busy_time'] = $aRet['busy_time'], true;
+            $aRet['busy_time'] = $aRet['busy_time'];
             $aRet['free_time'] = json_decode($aRet['free_time'], true);
         }
 
