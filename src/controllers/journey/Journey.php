@@ -176,7 +176,7 @@ class Journey extends \apps\controllers\BaseController
         }
 
         // 数组随机一下
-        shuffle($aNotUsedSpot);
+        // shuffle($aNotUsedSpot);
 
         $aRecommandSpot = $aCandidateSpots[$aNotUsedSpot[0]]['spot'];
         $aRecommandTime = $aCandidateSpots[$aNotUsedSpot[0]]['time'];

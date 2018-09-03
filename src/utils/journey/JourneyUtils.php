@@ -177,4 +177,16 @@ class JourneyUtils
 
         return $aRecommandSpot;
     }
+
+    public static function iGetRelation($relation)
+    {
+        $iRet = 0;
+        for ($i = 1; $i <= 8; $i = $i*2) {
+            if ($relation & $i) {
+                $iRet++;
+            }
+        }
+
+        return $iRet;
+    }
 }

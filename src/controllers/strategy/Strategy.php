@@ -81,7 +81,21 @@ class Strategy
         \apps\utils\strategy\ReportLog::vFinalSpot($aSpots);
         Log::vNotice("剔除不合适时间后： ", ["数量为". count($aSpots)]);
 
+        $aSpots = self::aSortByRelation($aSpots);
+
         return $aSpots;
+    }
+
+    protected static function aSortByRelation($aSpot)
+    {
+        $aRelation = [];
+        foreach ($aSpot as $key => $item) {
+            $aRelation[$key] = $item['relation'];
+        }
+
+        array_multisort($aRelation, SORT_NUMERIC, SORT_ASC, $aSpot);
+
+        return $aSpot;
     }
 
     /**
@@ -157,6 +171,7 @@ class Strategy
                 $aRet[$spot['id']] = [
                     'spot' => $spot,
                     'time' => $aFitTimeInterval,
+                    'relation' => \apps\utils\journey\JourneyUtils::iGetRelation($spot['relation']),
                 ];
             }
         }

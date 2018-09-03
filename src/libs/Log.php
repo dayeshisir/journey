@@ -108,7 +108,9 @@ class Log
             return;
         }
 
-        self::$oNotice->addNotice($message, $aContent);
+         // self::$oNotice->addNotice($message, $aContent);
+
+        self::$oNotice->notice($message, $aContent);
     }
 
     /**
