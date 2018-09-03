@@ -55,47 +55,27 @@ class Strategy
             'max_budget' => $aJourney['max_budget'],
         ];
 
-        $sReadIntention = '';
-        switch ($aCondition['intention']) {
-            case \apps\common\Constant::INTENTION_TYPE_ANY:
-                $sReadIntention = "任意位置";
-                break;
-            case \apps\common\Constant::INTENTION_TYPE_CHINA:
-                $sReadIntention = "国内";
-                break;
-            case \apps\common\Constant::INTENTION_TYPE_INTERNATION:
-                $sReadIntention = "国外";
-                break;
-        }
-
-        $sBudget = '';
-        switch ($aJourney['min_budget']) {
-            case 0 :
-                $sBudget = "预算无所谓";
-                break;
-            case 1:
-                $sBudget = '0 ~ 3000';
-                break;
-            case 2:
-                $sBudget = '3000 ~ 10000';
-                break;
-        }
-
-        $aPersonRead = [
-            "intention"  => $sReadIntention,
-            "people_num" => '本局出行人数为' . $aCondition['people_num'] .  '人',
-            "budget"     => $sBudget,
-        ];
-
-        Log::vNotice('策略汇总', $aPersonRead);
+        // 消息汇总
+        \apps\utils\strategy\ReportLog::vStartLog($aCondition, $aJourney);
 
         $aSpots = \apps\models\spot\Spot::aGetSpotsByCondition($aCondition);
+
+        Log::vNotice('[根据意向、人数和预算筛选的策略如下：]');
+
+        \apps\utils\strategy\ReportLog::vChooseSpot($aSpots);
 
         // 根据关系过滤
         $aSpots = self::filterRelation($aSpots, $aJourney['relation']);
 
+        Log::vNotice('提出不合适的关系后，筛选的策略如下');
+
+        \apps\utils\strategy\ReportLog::vChooseSpot($aSpots);
+
         // 过滤时间
         $aSpots = self::filterTime($aSpots, $aJourney, $aJurneyIntention);
+
+        Log::vNotice('提出不合适的时间区间后，筛选的策略如下');
+        \apps\utils\strategy\ReportLog::vChooseSpot($aSpots);
 
         return $aSpots;
     }
