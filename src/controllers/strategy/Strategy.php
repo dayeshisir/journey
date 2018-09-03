@@ -133,6 +133,28 @@ class Strategy
      */
     protected static function filterTime($aSpots, $aJouney, $aIntention)
     {
+        $iJourneyStart = strtotime($aJouney['start_time']);
+        $iJourneyEnd   = strtotime($aJouney['end_time']);
+        $sYear = date('Y', $iJourneyStart);
+        $aRet = [];
+        foreach ($aSpots as $spot) {
+            foreach ($spot['time'] as $time) {
+                $iCurStart = strtotime($sYear . '-' . $time['start_time']);
+                $iCurEnd   = strtotime($sYear . '-' . $time['end_time']);
+
+                if ($iCurStart <= $iJourneyStart && $iCurEnd >= $iJourneyEnd) {
+                    $aRet[$spot['id']] = [
+                        'spot' => $spot,
+                        'time' => $time,
+                        'relation' => \apps\utils\journey\JourneyUtils::iGetRelation($spot['relation']),
+                    ];
+                    break;
+                }
+            }
+        }
+
+        return $aRet;
+
         $aPeriod = [];
         foreach ($aIntention as $intention) {
             $aPeriod[$intention['uid']] = $intention['free_time'];
