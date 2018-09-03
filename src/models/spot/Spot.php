@@ -46,7 +46,7 @@ class Spot extends \Illuminate\Database\Eloquent\Model
     {
         $oQuery = self::query();
         if (isset($aCondtion['intention'])) {
-            $oQuery->where('lable', '=', $aCondtion['intention']);
+            $oQuery->where('label', '=', $aCondtion['intention']);
         }
         $oQuery->where('min_num', '<=', $aCondtion['people_num']);
         $oQuery->where('max_num', '>=', $aCondtion['people_num']);

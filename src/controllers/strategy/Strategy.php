@@ -11,6 +11,7 @@ namespace apps\controllers\strategy;
 
 use apps\libs\Exception;
 use League\Period\Period;
+use apps\libs\Log;
 
 class Strategy
 {
@@ -49,10 +50,44 @@ class Strategy
         // 分析得到队员的出游意向
         $aCondition = [
             'intention'  => self::iGetIntention($aJurneyIntention),
-            'num'        => $aJourney['people_num'],
+            'people_num' => $aJourney['people_num'],
             'min_budget' => $aJourney['min_budget'],
             'max_budget' => $aJourney['max_budget'],
         ];
+
+        $sReadIntention = '';
+        switch ($aCondition['intention']) {
+            case \apps\common\Constant::INTENTION_TYPE_ANY:
+                $sReadIntention = "任意位置";
+                break;
+            case \apps\common\Constant::INTENTION_TYPE_CHINA:
+                $sReadIntention = "国内";
+                break;
+            case \apps\common\Constant::INTENTION_TYPE_INTERNATION:
+                $sReadIntention = "国外";
+                break;
+        }
+
+        $sBudget = '';
+        switch ($aJourney['min_budget']) {
+            case 0 :
+                $sBudget = "预算无所谓";
+                break;
+            case 1:
+                $sBudget = '0 ~ 3000';
+                break;
+            case 2:
+                $sBudget = '3000 ~ 10000';
+                break;
+        }
+
+        $aPersonRead = [
+            "intention"  => $sReadIntention,
+            "people_num" => '本局出行人数为' . $aCondition['people_num'] .  '人',
+            "budget"     => $sBudget,
+        ];
+
+        Log::vNotice('策略汇总', $aPersonRead);
 
         $aSpots = \apps\models\spot\Spot::aGetSpotsByCondition($aCondition);
 
@@ -183,7 +218,7 @@ class Strategy
         $iAnyRatio         = sprintf("%.2f", 1 - $fChinaRatio - $fInternationRatio);
 
         // rule 1 : 【国内】【国外】意向的人数比例都小于25%，则认为这个局没有目的地意向
-        if ($fChinaRatio < self::INTENTION_BASE  && fInternationRatio < self::INTENTION_BASE ) {
+        if ($fChinaRatio < self::INTENTION_BASE  && $fInternationRatio < self::INTENTION_BASE ) {
             return \apps\common\Constant::INTENTION_TYPE_ANY;
         }
 
