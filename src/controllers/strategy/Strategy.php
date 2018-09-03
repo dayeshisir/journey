@@ -37,7 +37,7 @@ class Strategy
 
     public static function aGetCandidate()
     {
-        return \apps\models\spot\Spot::aGetFakeSpots();
+        // return \apps\models\spot\Spot::aGetFakeSpots();
 
         $iJourneyId = \apps\libs\Request::mGetParam('journey_id', 0);
 
