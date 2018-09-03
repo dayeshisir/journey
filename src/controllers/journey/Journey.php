@@ -352,7 +352,7 @@ class Journey extends \apps\controllers\BaseController
 
             $aFreeTime[$aJourney['id']] = [['start_time' => $aJourney['start_time'], 'end_time' => $aJourney['end_time']]];
 
-            $aShowTime = \apps\utils\common\Time::aGetDispersedInvalidDate($aFreeTime);
+            $aShowTime = \apps\utils\common\Time::aFindInValidTime($aFreeTime);
 
             // 获取用户信息
             $aUserInfo = \apps\models\user\User::aGetUserByIds($aUids);
