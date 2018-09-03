@@ -32,6 +32,8 @@ class LoadData
         'L' => 'max_recommend_duration',
         'M' => 'relation',
         'N' => 'budget',
+        'O' => 'min_sbudget',
+        'P' => 'max_sbudget',
     );
 
     public static function init()
@@ -89,6 +91,8 @@ class LoadData
                 'relation'           => $iRelation,
                 'min_budget'         => $aRecommendBudget['min_budget'],
                 'max_budget'         => $aRecommendBudget['max_budget'],
+                'min_sbudget'        => $aNew['min_sbudget'],
+                'max_sbudget'        => $aNew['max_sbudget'],
             ];
         }
 
