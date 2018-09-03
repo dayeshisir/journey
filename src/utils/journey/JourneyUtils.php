@@ -147,6 +147,7 @@ class JourneyUtils
     {
         $journey = intval(\apps\libs\Request::mGetParam('journey_id', 0));
 
+
         $aCandidateSpots = \apps\controllers\strategy\Strategy::aGetCandidate();
 
         // $aCandidateMap = \apps\utils\common\Util::array2map($aCandidateSpots, 'id');
@@ -154,6 +155,8 @@ class JourneyUtils
         $aSpotIds = array_keys($aCandidateSpots);
 
         $aUsedSpot = \apps\utils\strategy\StrategyUtils::aGetSpot($journey);
+
+        $aUsedSpot = array_unique($aUsedSpot);
 
         $aNotUsedSpot = array_diff($aSpotIds, $aUsedSpot);
 
@@ -164,10 +167,11 @@ class JourneyUtils
         }
 
         // 数组随机一下
-        shuffle($aNotUsedSpot);
+        // shuffle($aNotUsedSpot);
+        $iSelectedSpot = current($aNotUsedSpot);
 
-        $aRecommandSpot = $aCandidateSpots[$aNotUsedSpot[0]]['spot'];
-        $aRecommandTime = $aCandidateSpots[$aNotUsedSpot[0]]['time'];
+        $aRecommandSpot = $aCandidateSpots[$iSelectedSpot]['spot'];
+        $aRecommandTime = $aCandidateSpots[$iSelectedSpot]['time'];
 
         // 绑定到数据库
         \apps\models\journey\Journey::iUpdateSpot($journey, $aRecommandSpot['id'], $aRecommandTime);

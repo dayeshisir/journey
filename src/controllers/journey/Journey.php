@@ -159,7 +159,9 @@ class Journey extends \apps\controllers\BaseController
      */
     protected function aGenSpot($journey)
     {
-        $aCandidateSpots = \apps\controllers\strategy\Strategy::aGetCandidate();
+        return \apps\utils\journey\JourneyUtils::aGenSpot();
+
+        /*$aCandidateSpots = \apps\controllers\strategy\Strategy::aGetCandidate();
 
         // $aCandidateMap = \apps\utils\common\Util::array2map($aCandidateSpots, 'id');
 
@@ -190,7 +192,7 @@ class Journey extends \apps\controllers\BaseController
         // 更新到redis缓存
         \apps\utils\strategy\StrategyUtils::iAdd($journey, $aRecommandSpot['id']);
 
-        return $aRecommandSpot;
+        return $aRecommandSpot;*/
     }
 
     /**
