@@ -238,8 +238,8 @@ class Journey extends \apps\controllers\BaseController
                 'duration'  => \apps\common\Constant::INTERVAL_WAIT_VOTE,
                 'target_num'=> count($aMember),
                 'time'      => [
-                    'start_time' => $aJourney['recommend_time'][0]['start_time'],
-                    'end_time'   => $aJourney['recommend_time'][0]['end_time'],
+                    'start_time' => $aJourney['recommend_time']['start_time'],
+                    'end_time'   => $aJourney['recommend_time']['end_time'],
                 ],
                 'vote' => $aVoteMap,
             ];
