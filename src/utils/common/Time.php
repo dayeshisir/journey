@@ -35,14 +35,50 @@ class Time
 
     public static function aGetDispersedInvalidDate($aStats, $aPeriod)
     {
-        // 减1 是因为计算之初， 将局的时间也加入进去
-        $iTargetNum = count($aPeriod) - 1;
+        $iTargetNum = count($aPeriod);
         $aRet       = [];
         foreach ($aStats as $date => $num) {
             if ($num < $iTargetNum) {
                 $aRet[$date] = $iTargetNum - $num;
             }
         }
+
+        $sStart  = '';
+        $sEnd    = '';
+        $iCurNum = 0;
+        $aRes = [];
+        foreach ($aRet as $date => $num) {
+            if (!$num) {
+                if (!empty($sStart)) {
+                    $aRes[] = [
+                        'start_time' => $sStart,
+                        'end_time'   => $sEnd,
+                        'num'        => $iCurNum,
+                    ];
+
+                    $sStart = $sEnd = '';
+                }
+
+                continue;
+            }
+            if (empty($sStart)) {
+                $sStart = $date;
+                $sEnd   = $date;
+                $iCurNum = $num;
+            } else if ($iCurNum == $num) {
+                $sEnd = $date;
+            } else {
+                $aRes[] = array(
+                    'start_time' => $sStart,
+                    'end_time'   => $sEnd,
+                    'num'        => $num,
+                );
+                $sStart = $sEnd;
+                $sEnd   = $sStart;
+                $iCurNum = 0;
+            }
+        }
+
 
         return $aRet;
     }

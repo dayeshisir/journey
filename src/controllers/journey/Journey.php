@@ -344,7 +344,7 @@ class Journey extends \apps\controllers\BaseController
                     $iInternalNum++;
                 }
 
-                $aCurFreeTime = json_decode($member['free_time'], true);
+                $aCurFreeTime = $member['free_time'];
                 $aFreeTime[$member['uid']] = $aCurFreeTime;
 
                 $aUids[] = $member['uid'];
@@ -352,7 +352,7 @@ class Journey extends \apps\controllers\BaseController
 
             $aFreeTime[$aJourney['id']] = [['start_time' => $aJourney['start_time'], 'end_time' => $aJourney['end_time']]];
 
-            $aShowTime = \apps\utils\common\Time::aFindIntersectTime($aFreeTime);
+            $aShowTime = \apps\utils\common\Time::aGetDispersedInvalidDate($aFreeTime);
 
             // 获取用户信息
             $aUserInfo = \apps\models\user\User::aGetUserByIds($aUids);
@@ -367,7 +367,7 @@ class Journey extends \apps\controllers\BaseController
                     'china'       => $iChinaNum,
                     'internation' => $iInternalNum,
                 ],
-                'free_time'  => $aShowTime,
+                'busy_time'  => $aShowTime,
             ];
 
             \apps\libs\BuildReturn::aBuildReturn($aRet);
