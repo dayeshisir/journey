@@ -55,8 +55,15 @@ class Strategy
             'max_budget' => $aJourney['max_budget'],
         ];
 
+        $aUids = array_column($aJurneyIntention, 'uid');
+        $aUser = \apps\models\user\User::aGetUserByIds($aUids);
+
+        $aNickName = array_column($aUser, "nick_name");
+
         // 消息汇总
         \apps\utils\strategy\ReportLog::vStartLog($aCondition, $aJourney);
+
+        Log::vNotice("局成员", $aNickName);
 
         $aSpots = \apps\models\spot\Spot::aGetSpotsByCondition($aCondition);
 
