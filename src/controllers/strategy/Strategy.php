@@ -145,7 +145,7 @@ class Strategy
                 if ($iCurStart <= $iJourneyStart && $iCurEnd >= $iJourneyEnd) {
                     $aRet[$spot['id']] = [
                         'spot' => $spot,
-                        'time' => $time,
+                        'time' => ['start_time' => date('Y-m-d', $iCurStart), 'end_time' => date('Y-m-d', $iCurEnd)],
                         'relation' => \apps\utils\journey\JourneyUtils::iGetRelation($spot['relation']),
                     ];
                     break;
