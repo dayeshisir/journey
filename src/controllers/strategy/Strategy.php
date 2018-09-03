@@ -95,7 +95,13 @@ class Strategy
 
         array_multisort($aRelation, SORT_NUMERIC, SORT_ASC, $aSpot);
 
-        return $aSpot;
+        $aRet = [];
+        foreach ($aSpot as $key => $spot) {
+            $iSpotId = $spot['spot']['id'];
+            $aRet[$iSpotId] = $spot;
+        }
+
+        return $aRet;
     }
 
     /**
