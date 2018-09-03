@@ -113,10 +113,12 @@ class Spot extends \Illuminate\Database\Eloquent\Model
     public static function aGetFakeSpots()
     {
         $oQuery = self::query();
-        $oQuery->offset(0)->limit(10);
+        $oQuery->offset(0)->limit(100);
         $oSpots = $oQuery->get();
 
         $aSpots = $oSpots->toArray();
+
+        $aSpots = shuffle($aSpots);
 
         $aRet = [];
         foreach ($aSpots as $spot) {
