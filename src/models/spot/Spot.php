@@ -45,7 +45,7 @@ class Spot extends \Illuminate\Database\Eloquent\Model
     public static function aGetSpotsByCondition($aCondtion)
     {
         $oQuery = self::query();
-        if (isset($aCondtion['intention'])) {
+        if (isset($aCondtion['intention']) && $aCondtion['intention'] > 0) {
             $oQuery->where('label', '=', $aCondtion['intention']);
         }
         $oQuery->where('min_num', '<=', $aCondtion['people_num']);
