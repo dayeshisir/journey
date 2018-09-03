@@ -30,13 +30,13 @@ class ReportLog
     {
         foreach ($aSpot as $spot) {
             $sIntention = \apps\common\Constant::INTENTION_TYPE_CHINA === intval($spot['label']) ? "国内" : "国外";
-            list($iMinBudget, $iMaxBudget) = self::aGetBudget($spot['budget']);
+            list($iMinBudget, $iMaxBudget) = self::aGetBudget($spot['min_budget'], $spot['max_budget']);
             $sRelation = self::sGetRelation($spot['relation']);
 
             $sLine = sprintf("策略id：%d 意向：%s 人数：[%d, %d] 预算 [%d, %d] 适合的关系：%s",
                 $spot['id'], $sIntention, $spot['min_num'], $spot['max_num'], $iMinBudget, $iMaxBudget, $sRelation);
 
-            Log::vNotice($sLine);
+            Log::vNotice($sLine, []);
         }
     }
 
@@ -60,12 +60,13 @@ class ReportLog
             $aRelation[] = "同学/同事";
         }
 
-        return implode(',', $aRelation)
+        return implode(',', $aRelation);
     }
 
-    public static function aGetBudget($nos)
+    public static function aGetBudget($min, $max)
     {
-        $aNo = explode(',', $nos);
+
+        $aNo = array($min, $max);
         $min = 100000000;
         $max = 0;
         foreach ($aNo as $no) {

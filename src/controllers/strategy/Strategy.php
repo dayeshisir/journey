@@ -60,21 +60,21 @@ class Strategy
 
         $aSpots = \apps\models\spot\Spot::aGetSpotsByCondition($aCondition);
 
-        Log::vNotice('[根据意向、人数和预算筛选的策略如下：]');
+        Log::vNotice('[根据意向、人数和预算筛选的策略如下：]', []);
 
         \apps\utils\strategy\ReportLog::vChooseSpot($aSpots);
 
         // 根据关系过滤
         $aSpots = self::filterRelation($aSpots, $aJourney['relation']);
 
-        Log::vNotice('提出不合适的关系后，筛选的策略如下');
+        Log::vNotice('提出不合适的关系后，筛选的策略如下', []);
 
         \apps\utils\strategy\ReportLog::vChooseSpot($aSpots);
 
         // 过滤时间
         $aSpots = self::filterTime($aSpots, $aJourney, $aJurneyIntention);
 
-        Log::vNotice('提出不合适的时间区间后，筛选的策略如下');
+        Log::vNotice('提出不合适的时间区间后，筛选的策略如下', []);
         \apps\utils\strategy\ReportLog::vChooseSpot($aSpots);
 
         return $aSpots;
