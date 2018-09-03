@@ -61,9 +61,6 @@ class Time
 
                 continue;
             }
-            if ($sStart == $sEnd) {
-                $iCurNum = $num;
-            }
             if (empty($sStart)) {
                 $sStart = $date;
                 $sEnd   = $date;
@@ -73,12 +70,12 @@ class Time
             } else {
                 $aRes[] = array(
                     'start_time' => $sStart,
-                    'end_time'   => date("Y-m-d", strtotime($sEnd) - 86400 ),
+                    'end_time'   => $sEnd,
                     'num'        => $iCurNum,
                 );
-                $sStart = $sEnd;
-                $sEnd   = $sStart;
-                $iCurNum = 0;
+                $sStart = $date;
+                $sEnd   = $date;
+                $iCurNum = $num;
             }
         }
 
