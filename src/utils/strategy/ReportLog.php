@@ -40,6 +40,13 @@ class ReportLog
         }
     }
 
+    public static function vFinalSpot($aSpot)
+    {
+        foreach ($aSpot as $spot) {
+            self::vChooseSpot($spot['spot']);
+        }
+    }
+
     public static function sGetRelation($iRelation)
     {
         $aRelation = [];

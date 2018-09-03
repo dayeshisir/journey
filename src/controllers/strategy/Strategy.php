@@ -75,7 +75,7 @@ class Strategy
         $aSpots = self::filterTime($aSpots, $aJourney, $aJurneyIntention);
 
         Log::vNotice('提出不合适的时间区间后，筛选的策略如下', []);
-        \apps\utils\strategy\ReportLog::vChooseSpot($aSpots);
+        \apps\utils\strategy\ReportLog::vFinalSpot($aSpots);
 
         return $aSpots;
     }
